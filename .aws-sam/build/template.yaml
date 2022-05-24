@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'serverlessauth
+
+  auth using mongodb with aws lambda
+
+  '
+Globals:
+  Function:
+    Timeout: 30
+Resources:
+  apiDataRetrive:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: apiDataRetrive
+      Handler: apiHandler.apiData
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+      Events:
+        Status:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+    Metadata:
+      SamResourceId: apiDataRetrive
+  sendNotificatonFirebase:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: sendNotificatonFirebase
+      Handler: firebaseHandler.sendNotifications
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+    Metadata:
+      SamResourceId: sendNotificatonFirebase
+  databaseDataAccess:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: databaseDataAccess
+      Handler: databaseHandler.dbData
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+    Metadata:
+      SamResourceId: databaseDataAccess

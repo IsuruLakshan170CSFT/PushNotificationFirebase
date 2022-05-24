@@ -1,0 +1,30 @@
+service: serverlessauth
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  apiData:
+    handler: apiHandler.apiData
+
+    events:
+      - http:
+          path: /getAll
+          method: get
+          cors: true
+
+
+      - http:
+          path: /addOne
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - application/json
+              
+            allowCredentials: false
+
+ 
