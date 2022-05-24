@@ -43,7 +43,6 @@
       req.end();
    });
 
-  
   }
 
   export  {sendNotifications,notifications};
