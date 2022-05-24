@@ -20,7 +20,6 @@ export class UserService {
 
   constructor(private http:HttpClient) { }
 
-
   // get all users
   getUser(): Observable<any> {
     const httpHeaders= new HttpHeaders({
@@ -40,7 +39,6 @@ export class UserService {
       return this.http.get<any>(`${this.baseURL}/getOne`,data)
   
  }
-
 
   postUser(data: any): Observable<any> {
     console.log("Post Data");
