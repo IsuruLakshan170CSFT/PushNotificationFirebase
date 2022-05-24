@@ -7,7 +7,6 @@ import cors from 'cors';
 import { mongoose } from 'mongoose';
 import { DBUrl } from './config.js';
 import  {UserModel}  from './models/user.js';
-//import  {sendNotifications,notifications}  from './firebaseHandler.js';
 import http from 'https';
 
 const authHeader ='key=AAAAHwhqxaw:APA91bGLH_ceCg20S-psBpysf974Yam1mGb0pGxEPIfX_Q_TgjihG4p_j513rD46CCAMzP9e0bemJFJMhKf3TDMwcsL-ws2PJySrf9RN8q9mm_ShzkcK3cBJsXx0A2LDT8BEvruUMs_j';
@@ -18,13 +17,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
- mongoose.connect(DBUrl,{useNewUrlParser:true});
+mongoose.connect(DBUrl,{useNewUrlParser:true});
 
-
-
-//add a user changed
+//add or update user 
 app.post('/addOne', async (req, res) => {
-//  sendNotifications();
   console.log( "user body : "+req.body.user);
   const currentUser = await UserModel.findOne({ user: req.body.user});
 
@@ -46,9 +42,9 @@ else{
 }
 
 });
+
 //send firebase notifications
 app.post('/send', async (req, res) => {
-  // res.send("success");
     notifications (req);
 })
 
@@ -66,17 +62,6 @@ app.get("/getAll", async (req, res) => {
   }
 );
 
-//get one user
-// Find a single User with an id
-app.get("/getOne", async (req, res) => {
-  try {
-      const user = await UserModel.findById(req.params.id);
-      console.log(user);
-      res.status(200).json(user);
-  } catch(error) {
-      res.status(404).json({ message: error.message});
-  }
-});
 async function notifications (requestBody){
 
   return new Promise((resolve, reject) => {
@@ -107,8 +92,6 @@ async function notifications (requestBody){
     console.log(reqBody);
     req.end();
  });
-
-
 }
 
 export const apiData = serverless(app);
