@@ -1,18 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient,HttpHeaders,HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/';
-import { map } from 'rxjs/operators';
-import {Device} from './user.model';
-import {User} from './assets'
-
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   
-  selectedUser? :Device;
-  users ?:Device[];
-  //
   httpHeaders = new HttpHeaders().set('content-type', 'application/json');
 
   readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
@@ -29,15 +22,6 @@ export class UserService {
     console.log("get Users");
     return this.http.get(`${this.baseURL}/getAll`)
 
- }
-
-
-   // get one user
-   getUserOne(data: any): Observable<any> {
-
-    console.log("get one data");
-      return this.http.get<any>(`${this.baseURL}/getOne`,data)
-  
  }
 
   postUser(data: any): Observable<any> {
