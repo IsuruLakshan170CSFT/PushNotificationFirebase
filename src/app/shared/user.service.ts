@@ -16,7 +16,7 @@ export class UserService {
   httpHeaders = new HttpHeaders().set('content-type', 'application/json');
 
   readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
- // readonly baseURL ='http://127.0.0.1:3000';
+//  readonly baseURL ='http://127.0.0.1:3000';
 
   constructor(private http:HttpClient) { }
 
