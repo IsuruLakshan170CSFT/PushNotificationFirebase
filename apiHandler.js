@@ -38,9 +38,7 @@ else{
     "response": "Add new User"
    }
    res.send(responseData);
- 
 }
-
 });
 
 //send firebase notifications
