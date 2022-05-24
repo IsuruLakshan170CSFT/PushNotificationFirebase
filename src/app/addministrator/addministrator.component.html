@@ -1,0 +1,59 @@
+
+
+<div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
+    <div class="col">
+        
+<div class="secondTable">
+    <p-table [value]="listOfUsers" [(selection)]="selectedlistOfUsers" dataKey="user" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+         
+                <th>User</th>
+                <th>Token</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                </td>
+                <td>{{product.user}}</td>
+                <td>{{product.token}}</td>
+              
+            </tr>
+        </ng-template>
+    </p-table>
+
+</div>
+
+    </div>                        
+    <div class="col">
+
+            <div class="form-group">
+              <label >Notification title</label>
+              <input   [(ngModel)]="notificationTitle" placeholder="Title">
+         
+            </div>
+            <div class="form-group">
+              <label >Notification body</label>
+              <input   [(ngModel)]="notificationBody"  placeholder="Body">
+            </div>
+          
+           
+            <button type="submit" class="btn btn-primary" (click)="OnSendNotification()">Send</button>
+        
+            <button type="submit" class="btn btn-success" (click)="AddToken()">Create tokens</button>
+
+  </div>
+
+
+
+
+
+
+
+
+
