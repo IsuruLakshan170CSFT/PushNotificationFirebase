@@ -27,7 +27,6 @@ class LocalNotificationService {
           android: AndroidNotificationDetails(
         "easyapproach",
         "easyapproach channel",
-        //  "this is our channel",
         importance: Importance.max,
         priority: Priority.high,
       ));
@@ -40,7 +39,6 @@ class LocalNotificationService {
         payload: message.data["route"],
       );
     } on Exception catch (e) {
-      // TODO
       print(e);
     }
   }
