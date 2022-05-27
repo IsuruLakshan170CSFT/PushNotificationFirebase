@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     print("test init state");
     FirebaseMessaging.instance.getToken().then((value) async {
-      String? token = value;
+      token = value;
       if (Platform.isAndroid) {
         device = "Android Application";
         // Android-specific code
@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com/addOne');
       try {
         final bodyObj = {
-          'user': 'android',
+          'user': 'android emulator',
           'token': token,
           'deviceType': device
         };
