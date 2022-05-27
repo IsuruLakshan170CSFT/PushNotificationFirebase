@@ -81,8 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> sendToken() async {
     String? token;
     String? device;
-
-    print("test init state");
+ 
     FirebaseMessaging.instance.getToken().then((value) async {
       token = value;
       if (Platform.isAndroid) {
