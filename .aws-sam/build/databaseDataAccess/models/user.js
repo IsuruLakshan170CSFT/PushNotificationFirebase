@@ -3,7 +3,8 @@ import { mongoose } from 'mongoose';
 const UserSchema =mongoose.Schema(
     {
         user: String,
-        token: String
+        token: String,
+        deviceType:String
     }, {
         timestamps: true
     });
