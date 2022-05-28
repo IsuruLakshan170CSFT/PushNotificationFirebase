@@ -16,8 +16,8 @@ title = 'af-notification';
   constructor(private service:UserService) {}
   ngOnInit(): void {
   //  this.UserService.postUser("str");
-   // this.requestPermission();
-   //  this.listen();
+    this.requestPermission();
+     this.listen();
   }
   requestPermission() {
     const messaging = getMessaging();
@@ -47,27 +47,11 @@ title = 'af-notification';
 
   OnSaveToken(){
     let data={
-     user:"yugan",
-     device:[
-       { deviceId:"dev2" , deviceName:"firefox" ,deviceToken:"2222"}
-     ],
+     user:"Firefox",
+     token:this.currentTokenSave,
+     deviceType:"Web Application"
     }
-    this.service.postUsertest(data)
-    .subscribe(data => {
-    	console.log(data)
-    });
-  }
-
-
-
-  OnRemoveToken(){
-    let data={
-     user:"kasun",
-     device:[
-       { deviceId:"dev1" , deviceName:"firefox" ,deviceToken:"22222"}
-     ],
-    }
-    this.service.postRemoveUsertest(data)
+    this.service.postUser(data)
     .subscribe(data => {
     	console.log(data)
     });

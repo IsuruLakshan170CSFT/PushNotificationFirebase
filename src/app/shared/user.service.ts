@@ -9,7 +9,8 @@ export class UserService {
   httpHeaders = new HttpHeaders().set('content-type', 'application/json');
 
   readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
-//  readonly baseURL ='http://127.0.0.1:3000';
+ //  readonly baseURL ='http://127.0.0.1:3000';
+  // readonly baseURL ='http://localhost:3000';
 
   constructor(private http:HttpClient) { }
 
@@ -30,6 +31,7 @@ export class UserService {
     return this.http.post(`${this.baseURL}/addOne`, data);
   }
   
+  
   postNotification(data: any): Observable<any> {
     console.log("Post notification");
     console.log(data);
@@ -37,7 +39,18 @@ export class UserService {
   }
 
   
+  postUsertest(data: any): Observable<any> {
+    console.log("Post Data");
+    console.log(data);
+    return this.http.post(`${this.baseURL}/add_user`, data);
+  }
 
+  postRemoveUsertest(data: any): Observable<any> {
+    console.log("Post Data");
+    console.log(data);
+    return this.http.post(`${this.baseURL}/delete`, data);
+  }
+  
 
 
 
