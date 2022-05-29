@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col-6">
         <div class="secondTable">
-            <p-table [value]="listOfUsers" [(selection)]="selectedlistOfUsers" dataKey="user" responsiveLayout="scroll">
+            <p-table [value]="listOfAllUsers" [(selection)]="selectedlistOfUsers" dataKey="user" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 3rem">
@@ -24,8 +24,8 @@
                         </th>
                  
                         <th>User</th>
-                        <th>Device Type</th>
-                        <th>Token</th>
+                        <th>Device Id</th>
+                        <th>Number of devices</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product>
@@ -34,8 +34,13 @@
                             <p-tableCheckbox [value]="product"></p-tableCheckbox>
                         </td>
                         <td>{{product.user}}</td>
-                        <td>{{product.deviceType}}</td>
-                        <td>{{product.token}}</td>
+                        <td *ngFor="let device of product.device">
+                          {{device.deviceId}}
+                        </td>
+                  
+                        <td *ngFor="let device of product.device">
+                          {{device.deviceName}}
+                        </td>
                       
                     </tr>
                 </ng-template>

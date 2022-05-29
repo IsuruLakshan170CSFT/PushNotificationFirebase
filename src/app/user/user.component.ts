@@ -12,12 +12,12 @@ import { UserService } from '../shared/user.service';
 export class UserComponent implements OnInit {
 title = 'af-notification';
   message:any = null;
-  currentTokenSave :any=null;
+  currentTokenSave?:String="";
   constructor(private service:UserService) {}
   ngOnInit(): void {
   //  this.UserService.postUser("str");
-   // this.requestPermission();
-   //  this.listen();
+   this.requestPermission();
+   this.listen();
   }
   requestPermission() {
     const messaging = getMessaging();
@@ -27,9 +27,10 @@ title = 'af-notification';
        (currentToken) => {
          if (currentToken) {
            console.log("we got the token.....");
-           console.log(currentToken);
+        //   console.log(currentToken);
            this.currentTokenSave =currentToken;
-           this.OnSaveToken();
+           console.log(this.currentTokenSave);
+         //  this.OnSaveToken();
          } else {
            console.log('No registration token available.Request permission to generate one.');
          }
@@ -46,10 +47,11 @@ title = 'af-notification';
   }
 
   OnSaveToken(){
+    console.log(this.currentTokenSave);
     let data={
-     user:"yugan",
+     user:"Pavani",
      device:[
-       { deviceId:"dev2" , deviceName:"firefox" ,deviceToken:"2222"}
+       { deviceId:"dev3" , deviceName:"FireFox" ,deviceToken: this.currentTokenSave}
      ],
     }
     this.service.postUsertest(data)
@@ -57,8 +59,6 @@ title = 'af-notification';
     	console.log(data)
     });
   }
-
-
 
   OnRemoveToken(){
     let data={

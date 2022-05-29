@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/shared/user.service';
-import {User,UserToken} from 'src/app/shared/assets';
+import {User,UserToken,UserModel} from 'src/app/shared/assets';
 import { ThisReceiver } from '@angular/compiler';
 import { FormGroup,FormControl } from '@angular/forms';
 
@@ -12,7 +12,9 @@ import { FormGroup,FormControl } from '@angular/forms';
 })
 export class AddministratorComponent implements OnInit {
 
-  listOfUsers: User[]=[];
+  listOfAllUsers: UserModel[]=[];
+
+  // listOfUsers: User[]=[];
   selectedlistOfUsers: any[]=[];
   selectedUsersToken:UserToken[]=[];
 
@@ -26,10 +28,11 @@ export class AddministratorComponent implements OnInit {
   constructor(private service:UserService) {}
 
   ngOnInit(): void {
-    this.GetAllUsers();
+    //this.GetAllUsers();
+    this. GetAllUsersWithDevices();
     
   }
-
+/*
 
 GetAllUsers(){
   this.service.getUser()
@@ -60,9 +63,9 @@ GetAllUsers(){
   }
   }
 
-
+*/
   OnSendNotification(){
-    this.AddToken();
+    this.onCheckArry();
  
     let data={
 
@@ -79,6 +82,42 @@ GetAllUsers(){
     this.notificationToken='';
 
     
+  }
+
+
+  //new updates
+
+  GetAllUsersWithDevices(){
+    this.service.getAllUsers()
+    .subscribe
+    (
+      data=>{
+        console.log(data);
+        for(var i = 0; i < data.length ; i++){
+          this.listOfAllUsers.push(data[i]);
+          }
+        console.log(this.listOfAllUsers.length);
+      }
+    );
+  }
+
+  onCheckArry(){
+
+    for(var i = 0; i < this.selectedlistOfUsers.length ; i++){
+        
+      for( let j=0;j < this.selectedlistOfUsers[i].device.length ;j++){
+
+       this.testToken = '"'+this.selectedlistOfUsers[i].device[j].deviceToken+'"' ;
+
+       if(i == 0 && j == 0){
+         this.finalToken =  ''+ this.testToken +'';
+       }
+        else{
+         this.finalToken =  ''+ this.finalToken +','+ this.testToken +'';
+       } 
+      }
+  }
+  console.log(this.finalToken);
   }
 
 }

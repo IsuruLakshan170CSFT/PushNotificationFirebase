@@ -14,6 +14,9 @@ export class UserService {
 
   constructor(private http:HttpClient) { }
 
+  
+/*
+
   // get all users
   getUser(): Observable<any> {
     const httpHeaders= new HttpHeaders({
@@ -30,7 +33,7 @@ export class UserService {
     console.log(data);
     return this.http.post(`${this.baseURL}/addOne`, data);
   }
-  
+  */
   
   postNotification(data: any): Observable<any> {
     console.log("Post notification");
@@ -38,20 +41,29 @@ export class UserService {
     return this.http.post(`${this.baseURL}/send`, data);
   }
 
-  
+  //new updates
   postUsertest(data: any): Observable<any> {
-    console.log("Post Data");
+    console.log("Post User Data");
     console.log(data);
     return this.http.post(`${this.baseURL}/add_user`, data);
   }
 
   postRemoveUsertest(data: any): Observable<any> {
-    console.log("Post Data");
+    console.log("Remove User Data");
     console.log(data);
     return this.http.post(`${this.baseURL}/delete`, data);
   }
   
 
+ // get all users
+ getAllUsers(): Observable<any> {
+  const httpHeaders= new HttpHeaders({
+    'content-type' :'application/json',
+  });
 
+  console.log("get Users");
+  return this.http.get(`${this.baseURL}/getAllUsers`)
+
+}
 
 }
