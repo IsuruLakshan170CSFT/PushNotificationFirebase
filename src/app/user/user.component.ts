@@ -20,7 +20,6 @@ export class UserComponent implements OnInit {
 
   constructor(private service:UserService , private deviceService: DeviceDetectorService) {}
   ngOnInit(): void {
-   this.getBrowserName();
    this.requestPermission();
    this.listen();
   }
@@ -60,11 +59,11 @@ export class UserComponent implements OnInit {
   }
 
   OnSaveToken(){
-    
+    this.getBrowserName();
     console.log(this.myId);
     console.log(this.currentTokenSave);
     let data={
-     user:"kavini",
+     user:"hasitha",
      device:[
        { deviceId:this.myId , deviceName:this.browserName , deviceToken: this.currentTokenSave}
      ],
@@ -77,11 +76,11 @@ export class UserComponent implements OnInit {
 
   OnRemoveToken(){
     let data={
-     user:"kasun",
-     device:[
-       { deviceId:"dev1" , deviceName:"firefox" ,deviceToken:"22222"}
-     ],
-    }
+      user:"pawan",
+      device:[
+        { deviceId:this.myId , deviceName:this.browserName , deviceToken: this.currentTokenSave}
+      ],
+     }
     this.service.postRemoveUsertest(data)
     .subscribe(data => {
     	console.log(data)

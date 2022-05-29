@@ -24,8 +24,8 @@
                         </th>
                  
                         <th>User</th>
-                        <th>Device Id</th>
                         <th>Device Name</th>
+                        <!-- <th>Device Id</th> -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product>
@@ -35,12 +35,11 @@
                         </td>
                         <td>{{product.user}}</td>
                         <td >
-                          <tr *ngFor="let device of product.device">{{device.deviceId}}</tr>
-                        </td>
-                        <td >
                           <tr *ngFor="let device of product.device">{{device.deviceName}}</tr>
                         </td>
-                   
+                        <!-- <td >
+                          <tr *ngFor="let device of product.device">{{device.deviceId}}</tr>
+                        </td> -->
                     </tr>
                 </ng-template>
             </p-table>
