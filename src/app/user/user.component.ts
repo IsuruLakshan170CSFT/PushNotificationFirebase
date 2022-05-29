@@ -75,7 +75,7 @@ export class UserComponent implements OnInit {
     this.getBrowserName();
     console.log(this.myId);
     console.log(this.currentTokenSave);
-    this.service.postUsertest(this.userData())
+    this.service.postUser(this.userData())
     .subscribe(data => {
     	console.log(data)
     });
@@ -84,7 +84,7 @@ export class UserComponent implements OnInit {
   }
 
   OnRemoveToken(){
-    this.service.postRemoveUsertest(this.userData())
+    this.service.postRemoveUser(this.userData())
     .subscribe(data => {
     	console.log(data)
     });

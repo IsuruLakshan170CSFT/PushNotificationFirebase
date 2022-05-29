@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/shared/user.service';
-import {User,UserToken,UserModel} from 'src/app/shared/assets';
-import { ThisReceiver } from '@angular/compiler';
-import { FormGroup,FormControl } from '@angular/forms';
-//import browserID from 'browser-id';
+import {UserToken,UserModel} from 'src/app/shared/assets';
 import * as uuid from "uuid";
 
 @Component({
@@ -14,8 +11,6 @@ import * as uuid from "uuid";
 export class AddministratorComponent implements OnInit {
 
   listOfAllUsers: UserModel[]=[];
-
-  // listOfUsers: User[]=[];
   selectedlistOfUsers: any[]=[];
   selectedUsersToken:UserToken[]=[];
 
@@ -37,40 +32,9 @@ export class AddministratorComponent implements OnInit {
 
     
   }
-/*
 
-GetAllUsers(){
-  this.service.getUser()
-  .subscribe
-  (
-    data=>{
-
-      for(var i = 0; i < data.length ; i++){
-        this.listOfUsers.push(data[i]);
-        }
-    }
-  );
-}
-
-  AddToken(){
-    console.log(' "check" ');
-  
-    for(var i = 0; i < this.selectedlistOfUsers.length ; i++){
-      this.selectedUsersToken.push(this.selectedlistOfUsers[i].token);
-      this.testToken = '"'+this.selectedlistOfUsers[i].token+'"' ;
-      
-    if(i ==0){
-      this.finalToken =  ''+ this.testToken +'';
-    }
-     else{
-      this.finalToken =  ''+ this.finalToken +','+ this.testToken +'';
-    } 
-  }
-  }
-
-*/
   OnSendNotification(){
-    this.onCheckArry();
+    this.addToken();
  
     let data={
 
@@ -106,7 +70,7 @@ GetAllUsers(){
     );
   }
 
-  onCheckArry(){
+  addToken(){
 
     for(var i = 0; i < this.selectedlistOfUsers.length ; i++){
         
