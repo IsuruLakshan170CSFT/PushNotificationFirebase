@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_push_notification/models/device_model.dart';
+import 'package:flutter_push_notification/securiry/device_data.dart';
 import 'package:flutter_push_notification/services/local_notification_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -60,21 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     LocalNotificationService.initialize(context);
     print("app init");
-    Future<void> main() async {
-      /// A model name.
-      final identifier = 'iPhone13,4';
 
-      final deviceName = DeviceName();
-      print('device name is');
+    Firebase();
+  }
 
-      /// Get device name from model name.
-      print('device name is ${deviceName.ios(identifier)}');
-      print('device name is ${await deviceName.apple(identifier)}');
-    }
-
-    getUUID();
-    // sendToken();
-    //gives you the message on which user taps
+  Future<void> Firebase() async {
+//gives you the message on which user taps
     //and it opend the app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
@@ -100,82 +92,80 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> getUUID() async {
+  Future<void> getUser() async {
     var uuid = Uuid();
+    var v1 = uuid.v1();
+    print("v1 : " + v1);
+    //set device id
+    // saveToken(v1);
 
-    // Generate a v1 (time-based) id
-    var v1 = uuid.v1(); // -> '6c84fb90-12c4-11e1-840d-7b25c5ee775a'
-
-    var v1_exact = uuid.v1(options: {
-      'node': [0x01, 0x23, 0x45, 0x67, 0x89, 0xab],
-      'clockSeq': 0x1234,
-      'mSecs': DateTime.utc(2011, 11, 01).millisecondsSinceEpoch,
-      'nSecs': 5678
-    }); // -> '710b962e-041c-11e1-9234-0123456789ab'
-
-    // Generate a v4 (random) id
-    var v4 = uuid.v4(); // -> '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
-
-    // Generate a v4 (crypto-random) id
-    var v4_crypto = uuid.v4(options: {'rng': UuidUtil.cryptoRNG});
-    // -> '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
-
-    // Generate a v5 (namespace-name-sha1-based) id
-    var v5 = uuid.v5(Uuid.NAMESPACE_URL, 'www.google.com');
-    // -> 'c74a196f-f19d-5ea9-bffd-a2742432fc9c'
-    // print("UUID IS :");
-    // print(v1);
-    // print(v1_exact);
-    // print(v4);
-    // print(v4_crypto);
-    //  print(v5);
-  }
-
-  Future<void> sendToken() async {
-    print('Send device');
-    String? token;
-    String? device;
+    DeviceData.setId(v1);
 
     FirebaseMessaging.instance.getToken().then((value) async {
-      token = value;
-
+      String? device;
+      //set device token
+      DeviceData.setDeviceToken(value.toString());
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
       if (Platform.isAndroid) {
         device = "Android Application";
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        //  print('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
-        // Android-specific code
+        /* print('Running on ${androidInfo.device}'); // e.g. "Moto G (4)"
+        print('Running on ${androidInfo.brand}');
+        print('Running on ${androidInfo.bootloader}');
+        print('Running on ${androidInfo.display}');
+        print('Running on ${androidInfo.hardware}');
+        print('Running on ${androidInfo..product}');
+
+        print('Running on ${androidInfo.androidId}');
+        print('Running on ${androidInfo.manufacturer}');
+        print('Running on ${androidInfo.model}');
+        print('Running on ${androidInfo.type}'); */
+        device = androidInfo.model;
       } else if (Platform.isIOS) {
         device = "IOS Application";
         // iOS-specific code
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
+        device = iosInfo.utsname.machine;
+        print('Running on ${iosInfo.utsname.machine}');
       }
-      //   print(device);
-
-      //  print(token);
-      var url = Uri.parse(
-          'https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com/add_user');
-      try {
-        Users  _user = 
-          Users(user: 'abs', device: [
-            Device(
-                deviceId: 'de2', deviceName: 'Android', deviceToken: '147852')
-          ]);
-        Map<String, String> headers = {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        };
-        var response =
-            await http.post(url, body: json.encode(_user.toJson()), headers: headers);
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      } catch (e) {
-        print('e:$e');
-      }
+      //set device name
+      DeviceData.setDeviceName(device.toString());
     });
   }
+
+  Future<void> setCredentials(endpoint) async {
+    if (endpoint == "add_user") {
+      getUser();
+    }
+
+    String? id = await DeviceData.getID();
+    String? name = await DeviceData.getDeviceName();
+    String? token = await DeviceData.getDeviceToken();
+    print("id ; " + id!);
+
+    var url = Uri.parse(
+        'https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com/$endpoint');
+    try {
+      Users _user = Users(
+          user: 'salitha',
+          device: [Device(deviceId: id, deviceName: name, deviceToken: token)]);
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      };
+      var response = await http.post(url,
+          body: json.encode(_user.toJson()), headers: headers);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (endpoint == "delete") {
+        DeviceData.deleteAllSecureData();
+      }
+    } catch (e) {}
+  }
+
+  bool isLogin = false;
+  String buttonText = "Login";
 
   @override
   Widget build(BuildContext context) {
@@ -192,9 +182,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                sendToken();
+                if (isLogin == false) {
+                  setCredentials("add_user");
+                  isLogin = true;
+                  setState(() {
+                    buttonText = 'Logout';
+                  });
+                } else if (isLogin == true) {
+                  setCredentials("delete");
+                  isLogin = false;
+                  setState(() {
+                    buttonText = 'Login';
+                  });
+                }
               },
-              child: Text('Login'),
+              child: Text(buttonText),
             )
           ],
         ),
