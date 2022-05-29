@@ -7,5 +7,5 @@
   </div>
   
 
-  <button type="submit" class="btn btn-primary" (click)="OnSaveToken()">Login</button>
-  <button type="submit" class="btn btn-secondary" (click)="OnRemoveToken()">Log out</button>
+  <button type="submit" class="btn btn-primary" [hidden] ="isHiddenLogin" (click)="OnSaveToken()">Login</button>
+  <button type="submit" class="btn btn-secondary" [hidden] ="isHiddenLogout" (click)="OnRemoveToken()">Log out</button>

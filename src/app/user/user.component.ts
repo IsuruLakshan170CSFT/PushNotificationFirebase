@@ -16,10 +16,13 @@ export class UserComponent implements OnInit {
   message:any = null;
   currentTokenSave?:String="";
   browserName?:String="";
-   myId = uuid.v4();
-
+   myId = uuid;
+   isHiddenLogin?:boolean=false;
+   isHiddenLogout?:boolean=true;
   constructor(private service:UserService , private deviceService: DeviceDetectorService) {}
   ngOnInit(): void {
+    console.log(this.myId);
+    this.getBrowserName();
    this.requestPermission();
    this.listen();
   }
@@ -58,33 +61,35 @@ export class UserComponent implements OnInit {
     });
   }
 
+ userData(){
+  let data={
+    user:"chamara",
+    device:[
+      { deviceId:this.browserName, deviceName:this.browserName , deviceToken: this.currentTokenSave}
+    ],
+   }
+   return data;
+ }
+
   OnSaveToken(){
     this.getBrowserName();
     console.log(this.myId);
     console.log(this.currentTokenSave);
-    let data={
-     user:"hasitha",
-     device:[
-       { deviceId:this.myId , deviceName:this.browserName , deviceToken: this.currentTokenSave}
-     ],
-    }
-    this.service.postUsertest(data)
+    this.service.postUsertest(this.userData())
     .subscribe(data => {
     	console.log(data)
     });
+    this.isHiddenLogin=true;
+    this.isHiddenLogout=false;
   }
 
   OnRemoveToken(){
-    let data={
-      user:"pawan",
-      device:[
-        { deviceId:this.myId , deviceName:this.browserName , deviceToken: this.currentTokenSave}
-      ],
-     }
-    this.service.postRemoveUsertest(data)
+    this.service.postRemoveUsertest(this.userData())
     .subscribe(data => {
     	console.log(data)
     });
+    this.isHiddenLogin=false;
+    this.isHiddenLogout=true;
   }
 
 
