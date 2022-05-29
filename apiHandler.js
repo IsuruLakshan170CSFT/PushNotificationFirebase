@@ -20,6 +20,7 @@ app.use(express.json());
 
 mongoose.connect(DBUrl,{useNewUrlParser:true});
 
+/*
 //add or update user 
 app.post('/addOne', async (req, res) => {
   console.log( "user body : "+req.body.user);
@@ -60,7 +61,7 @@ app.get("/getAll", async (req, res) => {
   }
   }
 );
-
+*/
 async function notifications (requestBody){
 
   return new Promise((resolve, reject) => {
@@ -93,6 +94,8 @@ async function notifications (requestBody){
  });
 }
 
+
+//new update
 //add devices
 app.post("/add_user", async (request, response) => {
    
@@ -188,8 +191,8 @@ app.post("/delete", async (request, response) => {
     //add new user
     if(findUser ==null){
    
-        console.log("This user not exist")
-        response.status(200).json({message:"This user not exist"});
+        console.log("This user is not exist")
+        response.status(200).json({message:"This user is not exist"});
     }
     //update exising user
     else{
@@ -233,7 +236,7 @@ app.post("/delete", async (request, response) => {
         const post = await User.findByIdAndUpdate(findUser.id,obj);
       //  console.log( post);
       
-       response.status(200).json({message:"remove a device to existing user"});
+       response.status(200).json({message:"remove a device in existing user"});
       
         } catch (error) {
           response.status(400).json({msg:"err"});
@@ -252,7 +255,17 @@ app.post("/delete", async (request, response) => {
   }
   });
   
-  
+  app.get("/getAllUsers", async (req, res) => {
+    try {     
+    const getUsers = await User.find({});
+    if(!getUsers)throw Error("Some thing worng");
+    console.log(getUsers);
+    res.send(getUsers);
+    } catch (error) {
+    res.status(400).json({msg:err});
+    }
+    }
+  );
 
 
 

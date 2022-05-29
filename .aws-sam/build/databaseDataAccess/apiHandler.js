@@ -252,7 +252,17 @@ app.post("/delete", async (request, response) => {
   }
   });
   
-  
+  app.get("/getAllUsers", async (req, res) => {
+    try {     
+    const getUsers = await User.find({});
+    if(!getUsers)throw Error("Some thing worng");
+    console.log(getUsers);
+    res.send(getUsers);
+    } catch (error) {
+    res.status(400).json({msg:err});
+    }
+    }
+  );
 
 
 
