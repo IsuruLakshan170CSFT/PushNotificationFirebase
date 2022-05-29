@@ -3,7 +3,8 @@ import { UserService } from 'src/app/shared/user.service';
 import {User,UserToken,UserModel} from 'src/app/shared/assets';
 import { ThisReceiver } from '@angular/compiler';
 import { FormGroup,FormControl } from '@angular/forms';
-
+//import browserID from 'browser-id';
+import * as uuid from "uuid";
 
 @Component({
   selector: 'app-addministrator',
@@ -28,8 +29,12 @@ export class AddministratorComponent implements OnInit {
   constructor(private service:UserService) {}
 
   ngOnInit(): void {
-    //this.GetAllUsers();
+    const myId = uuid.v4();
+
+    console.log(myId);
     this. GetAllUsersWithDevices();
+
+
     
   }
 /*

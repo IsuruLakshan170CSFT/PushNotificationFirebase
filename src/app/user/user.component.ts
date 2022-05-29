@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { environment } from 'src/environments/environment';
 import { UserService } from '../shared/user.service';
+import * as uuid from "uuid";
+import { DeviceDetectorService } from 'ngx-device-detector';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -10,15 +12,26 @@ import { UserService } from '../shared/user.service';
 })
 
 export class UserComponent implements OnInit {
-title = 'af-notification';
+  title = 'af-notification';
   message:any = null;
   currentTokenSave?:String="";
-  constructor(private service:UserService) {}
+  browserName?:String="";
+   myId = uuid.v4();
+
+  constructor(private service:UserService , private deviceService: DeviceDetectorService) {}
   ngOnInit(): void {
-  //  this.UserService.postUser("str");
+   this.getBrowserName();
    this.requestPermission();
    this.listen();
   }
+
+
+  getBrowserName() { 
+    this.browserName=this.deviceService.browser;
+    console.log(this.deviceService.browser);
+   // return this.deviceService.browser;
+  }
+
   requestPermission() {
     const messaging = getMessaging();
     console.log("message : >>"+messaging);
@@ -47,11 +60,13 @@ title = 'af-notification';
   }
 
   OnSaveToken(){
+    
+    console.log(this.myId);
     console.log(this.currentTokenSave);
     let data={
-     user:"Pavani",
+     user:"kavini",
      device:[
-       { deviceId:"dev3" , deviceName:"FireFox" ,deviceToken: this.currentTokenSave}
+       { deviceId:this.myId , deviceName:this.browserName , deviceToken: this.currentTokenSave}
      ],
     }
     this.service.postUsertest(data)
@@ -72,4 +87,6 @@ title = 'af-notification';
     	console.log(data)
     });
   }
+
+
 }
