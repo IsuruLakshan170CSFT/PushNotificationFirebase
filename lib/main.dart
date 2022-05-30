@@ -67,13 +67,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> deviceName() async {
-    String device = '';
-    setState(() {
-      device = 'Android Application';
-      // device = androidInfo.model!;
-      print(device);
-    });
-    await DeviceData.setDeviceName(device);
+    String? device = '';
+
+    if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      device = androidInfo.model;
+    } else if (Platform.isIOS) {
+      device = "IOS Application";
+      // iOS-specific code
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      // device = iosInfo.utsname.machine;
+      print('Running on ${iosInfo.utsname.machine}');
+    }
+
+    await DeviceData.setDeviceName(device!);
   }
 
   Future<void> Firebase() async {
@@ -107,52 +116,32 @@ class _MyHomePageState extends State<MyHomePage> {
     var uuid = Uuid();
     var v1 = uuid.v1();
     print("v1 : " + v1);
-    //set device id
-    // saveToken(v1);
 
     DeviceData.setId(v1);
-
-    String device = '';
     FirebaseMessaging.instance.getToken().then((value) async {
       //set device token
       DeviceData.setDeviceToken(value.toString());
-      // await DeviceData.setDeviceName("device.toString()");
-      // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
-      if (Platform.isAndroid) {
-        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      } else if (Platform.isIOS) {
-        device = "IOS Application";
-        // iOS-specific code
-        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        // device = iosInfo.utsname.machine;
-        print('Running on ${iosInfo.utsname.machine}');
-      }
-      //set device name
-      //  print('Running on');
     });
-    // print(device);
-    //  await DeviceData.setDeviceName(device.toString());
   }
 
   Future<void> setCredentials(endpoint, userName) async {
     if (endpoint == "add_user") {
+      DeviceData.setUserName(userName);
       getUser();
     }
 
     String? id = await DeviceData.getID();
-    String? name = await DeviceData.getDeviceName();
+    String? device = await DeviceData.getDeviceName();
     String? token = await DeviceData.getDeviceToken();
+    String? user = await DeviceData.getUserName();
     print("id ; " + id!);
-    print("device ; $name");
+    print("device ; $device");
     var url = Uri.parse(
         'https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com/$endpoint');
     try {
-      Users _user = Users(
-          user: userName,
-          device: [Device(deviceId: id, deviceName: name, deviceToken: token)]);
+      Users _user = Users(user: user, device: [
+        Device(deviceId: id, deviceName: device, deviceToken: token)
+      ]);
       Map<String, String> headers = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -163,7 +152,16 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Response body: ${response.body}');
 
       if (endpoint == "delete") {
-        //  DeviceData.deleteAllSecureData();
+        print(" delete ");
+        DeviceData.deleteId();
+        DeviceData.deleteToken();
+        DeviceData.deleteUserName();
+        String? deletetoken = await DeviceData.getDeviceToken();
+        String? deleteid = await DeviceData.getID();
+        String? deleteuser = await DeviceData.getUserName();
+        //print(deleteid);
+        // print(deletetoken);
+        print(deleteuser);
       }
     } catch (e) {}
   }
