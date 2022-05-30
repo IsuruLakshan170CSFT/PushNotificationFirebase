@@ -211,16 +211,3 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
-
-       /* print('Running on ${androidInfo.device}'); // e.g. "Moto G (4)"
-        print('Running on ${androidInfo.brand}');
-        print('Running on ${androidInfo.bootloader}');
-        print('Running on ${androidInfo.display}');
-        print('Running on ${androidInfo.hardware}');
-        print('Running on ${androidInfo..product}');
-
-        print('Running on ${androidInfo.androidId}');
-        print('Running on ${androidInfo.manufacturer}');
-        print('Running on ${androidInfo.model}');
-        print('Running on ${androidInfo.type}'); */
