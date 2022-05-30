@@ -63,6 +63,17 @@ class _MyHomePageState extends State<MyHomePage> {
     print("app init");
 
     Firebase();
+    deviceName();
+  }
+
+  Future<void> deviceName() async {
+    String device = '';
+    setState(() {
+      device = 'Android Application';
+      // device = androidInfo.model!;
+      print(device);
+    });
+    await DeviceData.setDeviceName(device);
   }
 
   Future<void> Firebase() async {
@@ -101,36 +112,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
     DeviceData.setId(v1);
 
+    String device = '';
     FirebaseMessaging.instance.getToken().then((value) async {
-      String? device;
       //set device token
       DeviceData.setDeviceToken(value.toString());
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      if (Platform.isAndroid) {
-        device = "Android Application";
-        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        /* print('Running on ${androidInfo.device}'); // e.g. "Moto G (4)"
-        print('Running on ${androidInfo.brand}');
-        print('Running on ${androidInfo.bootloader}');
-        print('Running on ${androidInfo.display}');
-        print('Running on ${androidInfo.hardware}');
-        print('Running on ${androidInfo..product}');
+      // await DeviceData.setDeviceName("device.toString()");
+      // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
-        print('Running on ${androidInfo.androidId}');
-        print('Running on ${androidInfo.manufacturer}');
-        print('Running on ${androidInfo.model}');
-        print('Running on ${androidInfo.type}'); */
-        device = androidInfo.model;
+      if (Platform.isAndroid) {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       } else if (Platform.isIOS) {
         device = "IOS Application";
         // iOS-specific code
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        device = iosInfo.utsname.machine;
+        // device = iosInfo.utsname.machine;
         print('Running on ${iosInfo.utsname.machine}');
       }
       //set device name
-      DeviceData.setDeviceName(device.toString());
+      //  print('Running on');
     });
+    // print(device);
+    //  await DeviceData.setDeviceName(device.toString());
   }
 
   Future<void> setCredentials(endpoint, userName) async {
@@ -142,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String? name = await DeviceData.getDeviceName();
     String? token = await DeviceData.getDeviceToken();
     print("id ; " + id!);
-
+    print("device ; $name");
     var url = Uri.parse(
         'https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com/$endpoint');
     try {
@@ -159,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Response body: ${response.body}');
 
       if (endpoint == "delete") {
-        DeviceData.deleteAllSecureData();
+        //  DeviceData.deleteAllSecureData();
       }
     } catch (e) {}
   }
@@ -208,3 +212,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+
+       /* print('Running on ${androidInfo.device}'); // e.g. "Moto G (4)"
+        print('Running on ${androidInfo.brand}');
+        print('Running on ${androidInfo.bootloader}');
+        print('Running on ${androidInfo.display}');
+        print('Running on ${androidInfo.hardware}');
+        print('Running on ${androidInfo..product}');
+
+        print('Running on ${androidInfo.androidId}');
+        print('Running on ${androidInfo.manufacturer}');
+        print('Running on ${androidInfo.model}');
+        print('Running on ${androidInfo.type}'); */
