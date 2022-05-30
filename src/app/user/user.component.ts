@@ -19,6 +19,8 @@ export class UserComponent implements OnInit {
    myId = uuid;
    isHiddenLogin?:boolean=false;
    isHiddenLogout?:boolean=true;
+   isHiddenProgress?:boolean=true;
+   userName?:String="";
   constructor(private service:UserService , private deviceService: DeviceDetectorService) {}
   ngOnInit(): void {
     console.log(this.myId);
@@ -63,7 +65,7 @@ export class UserComponent implements OnInit {
 
  userData(){
   let data={
-    user:"chamara",
+    user:this.userName,
     device:[
       { deviceId:this.browserName, deviceName:this.browserName , deviceToken: this.currentTokenSave}
     ],
@@ -72,24 +74,32 @@ export class UserComponent implements OnInit {
  }
 
   OnSaveToken(){
+    this.isHiddenLogin=true;
+    this.isHiddenProgress=false;
     this.getBrowserName();
     console.log(this.myId);
     console.log(this.currentTokenSave);
     this.service.postUser(this.userData())
     .subscribe(data => {
-    	console.log(data)
+    	console.log(data);
+      this.isHiddenProgress=true;
+      this.isHiddenLogout=false;
     });
-    this.isHiddenLogin=true;
-    this.isHiddenLogout=false;
+   
+   
   }
 
   OnRemoveToken(){
+    this.isHiddenLogout=true;
+    this.isHiddenProgress=false;
     this.service.postRemoveUser(this.userData())
     .subscribe(data => {
-    	console.log(data)
+    	console.log(data);
+       this.isHiddenProgress=true;
+      this.isHiddenLogin=false;
     });
-    this.isHiddenLogin=false;
-    this.isHiddenLogout=true;
+   
+ 
   }
 
 

@@ -1,11 +1,38 @@
-<div *ngIf="message;">
-    <h1>{{ message.notification.title }}</h1>
-    <h2>{{ message.notification.body }}</h2>
-  </div>
-  <div *ngIf="!message;">
-   <h1>Notification Content</h1>
-  </div>
-  
 
-  <button type="submit" class="btn btn-primary" [hidden] ="isHiddenLogin" (click)="OnSaveToken()">Login</button>
-  <button type="submit" class="btn btn-secondary" [hidden] ="isHiddenLogout" (click)="OnRemoveToken()">Log out</button>
+    <div class="row">
+      <div class="col-sm">
+      
+      </div>
+      <div class="col-sm">
+       
+<div *ngIf="message;">
+  <h1>{{ message.notification.title }}</h1>
+  <h2>{{ message.notification.body }}</h2>
+</div>
+<div *ngIf="!message;">
+ <h1>Notifications</h1>
+</div>
+<div class="row">
+
+  <div class="col-sm">
+      <input   [(ngModel)]="userName"  placeholder="Body">
+  </div>
+</div>
+<br />
+<mat-progress-bar 
+[hidden] ="isHiddenProgress"
+          [mode]="'indeterminate'">
+</mat-progress-bar>
+
+<br />
+
+
+<button type="submit" class="btn btn-primary" [hidden] ="isHiddenLogin" (click)="OnSaveToken()">Login</button>
+<button type="submit" class="btn btn-secondary" [hidden] ="isHiddenLogout" (click)="OnRemoveToken()">Log out</button>
+      </div>
+
+      <div class="col-sm">
+      
+      </div>
+
+    </div>

@@ -16,6 +16,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {TableModule} from 'primeng/table';
 import { UserComponent } from './user/user.component';
 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 initializeApp(environment.firebase);
 
@@ -36,7 +38,10 @@ initializeApp(environment.firebase);
     ButtonModule,
     MultiSelectModule,
     TableModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule
+    
   ],
   providers: [UserService],
   bootstrap: [AppComponent]
