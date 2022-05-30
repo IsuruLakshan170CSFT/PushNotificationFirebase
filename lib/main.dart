@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> setCredentials(endpoint) async {
+  Future<void> setCredentials(endpoint, userName) async {
     if (endpoint == "add_user") {
       getUser();
     }
@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
         'https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com/$endpoint');
     try {
       Users _user = Users(
-          user: 'salitha',
+          user: userName,
           device: [Device(deviceId: id, deviceName: name, deviceToken: token)]);
       Map<String, String> headers = {
         'Content-type': 'application/json',
@@ -164,6 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {}
   }
 
+  final myController = TextEditingController();
   bool isLogin = false;
   String buttonText = "Login";
 
@@ -177,19 +178,22 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Flutter Push notification ',
-            ),
+            Container(
+                width: 100.0,
+                child: TextField(
+                    controller: myController,
+                    style: TextStyle(
+                        fontSize: 20.0, height: 2.0, color: Colors.black))),
             ElevatedButton(
               onPressed: () {
                 if (isLogin == false) {
-                  setCredentials("add_user");
+                  setCredentials("add_user", myController.text);
                   isLogin = true;
                   setState(() {
                     buttonText = 'Logout';
                   });
                 } else if (isLogin == true) {
-                  setCredentials("delete");
+                  setCredentials("delete", myController.text);
                   isLogin = false;
                   setState(() {
                     buttonText = 'Login';
