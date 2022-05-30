@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -162,14 +161,18 @@ class _MyHomePageState extends State<MyHomePage> {
         //print(deleteid);
         // print(deletetoken);
         print(deleteuser);
+        print("clear all");
       }
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {}
   }
 
   final myController = TextEditingController();
   bool isLogin = false;
   String buttonText = "Login";
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,18 +194,23 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (isLogin == false) {
                   setCredentials("add_user", myController.text);
                   isLogin = true;
+                  myController.text = '';
                   setState(() {
+                    isLoading = true;
                     buttonText = 'Logout';
                   });
                 } else if (isLogin == true) {
                   setCredentials("delete", myController.text);
                   isLogin = false;
                   setState(() {
+                    isLoading = true;
                     buttonText = 'Login';
                   });
                 }
               },
-              child: Text(buttonText),
+              child: isLoading
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Text(buttonText),
             )
           ],
         ),
