@@ -50,7 +50,8 @@ else{
 app.post('/send', async (req, res) => {
     notifications (req);
     if(req.body.isSave){
-      saveNotifications (request)
+      console.log("IS SAVE CHECKED")
+      saveNotifications(req)
     }
 })
 
@@ -309,6 +310,7 @@ app.post("/delete", async (request, response) => {
 
   async function saveNotifications (request){
     try {
+      console.log("IS SAVE function")
       const post = new Notification(request.body);
       if(post == null)throw Error("Empty body!");
       await post.save();
