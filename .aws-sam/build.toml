@@ -8,6 +8,6 @@ architecture = "x86_64"
 handler = "apiHandler.apiData"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["apiDataRetrive", "sendNotificatonFirebase", "databaseDataAccess"]
+functions = ["apiDataRetrive"]
 
 [layer_build_definitions]

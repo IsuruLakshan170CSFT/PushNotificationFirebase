@@ -25,23 +25,3 @@ Resources:
             Method: ANY
     Metadata:
       SamResourceId: apiDataRetrive
-  sendNotificatonFirebase:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: sendNotificatonFirebase
-      Handler: firebaseHandler.sendNotifications
-      Runtime: nodejs14.x
-      Architectures:
-      - x86_64
-    Metadata:
-      SamResourceId: sendNotificatonFirebase
-  databaseDataAccess:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: databaseDataAccess
-      Handler: databaseHandler.dbData
-      Runtime: nodejs14.x
-      Architectures:
-      - x86_64
-    Metadata:
-      SamResourceId: databaseDataAccess

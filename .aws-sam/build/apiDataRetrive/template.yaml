@@ -25,24 +25,3 @@ Resources:
            Path: /{proxy+}
            Method: ANY
       
-  sendNotificatonFirebase:
-    Type: AWS::Serverless::Function 
-    Properties:
-      CodeUri: ./
-      Handler: firebaseHandler.sendNotifications
-      Runtime: nodejs14.x
-      Architectures:
-        - x86_64
-
- 
-         
-
-
-  databaseDataAccess:
-    Type: AWS::Serverless::Function 
-    Properties:
-      CodeUri: ./
-      Handler: databaseHandler.dbData
-      Runtime: nodejs14.x
-      Architectures:
-        - x86_64  

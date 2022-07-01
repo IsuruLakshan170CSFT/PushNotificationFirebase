@@ -1,6 +1,6 @@
 import { mongoose } from 'mongoose';
 
-const UserSchema =mongoose.Schema(
+const NotificationSchema =mongoose.Schema(
     {
         title: String,
         body: String,
@@ -9,6 +9,6 @@ const UserSchema =mongoose.Schema(
         timestamps: true
     });
 
-const NotificationModel =mongoose.model('Notification',UserSchema)
+const Notification=mongoose.model('Notification',NotificationSchema)
 
-export   {NotificationModel};
+export   {Notification};
