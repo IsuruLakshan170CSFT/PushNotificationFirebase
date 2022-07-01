@@ -1,14 +1,21 @@
 import { mongoose } from 'mongoose';
 
-const UserSchema =mongoose.Schema(
-    {
-        user: String,
-        token: String,
-        deviceType:String
-    }, {
-        timestamps: true
-    });
+const MessageSchema =  mongoose.Schema({
 
-const UserModel =mongoose.model('Device',UserSchema)
+  deviceId:String,
+  deviceName:String,
+  deviceToken:String
 
-export   {UserModel};
+})
+
+const UserSchema =  mongoose.Schema({
+  user: {
+    type: String,
+    required: true,
+  },
+  device:[MessageSchema]
+});
+
+const User = mongoose.model("User", UserSchema);
+
+export   {User};
