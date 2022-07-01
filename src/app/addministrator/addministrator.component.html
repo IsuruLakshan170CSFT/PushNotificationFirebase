@@ -1,6 +1,4 @@
 
-
-
  <div class="container">
     <div class="row height">
         <div class="col-4">
@@ -50,33 +48,43 @@
       <div class="col-6">
         <div class="container">
             <div class="row">
-              <div class="col-sm">
+              <div class="col-4">
                 <label ><h4>Notification title</h4> </label>
               </div>
-              <div class="col-sm">
+              <div class="col-4">
                 <input   [(ngModel)]="notificationTitle" placeholder="Title">
               </div>
             </div>
         
             <div class="row">
-                <div class="col-sm">
+                <div class="col-4">
                     <label ><h4>Notification body</h4> </label>
                 </div>
-                <div class="col-sm">
+                <div class="col-4">
                     <input   [(ngModel)]="notificationBody"  placeholder="Body">
                 </div>
               </div>
         
+
               <div class="row">
                 <div class="col-4">
+                    <label ><h4>Save to database</h4> </label>
                 </div>
                 <div class="col-4">
-                   
+                 <input type="checkbox" style="width: 40px;" [(ngModel)]="value">
+                </div>
+              </div>
 
+              <div class="row">
+              
+                <div class="col-4">
+                  <button type="submit" class="btn btn-primary" (click)="viewNotifications()">View Notifications</button>
                 </div>
                 <div class="col-4">
-                    <button type="submit" class="btn btn-primary" (click)="OnSendNotification()">Send</button>
+                  
+                  <button type="submit" class="btn btn-primary" (click)="OnSendNotification()">Send</button>
                 </div>
+                
               </div>
         
           </div>

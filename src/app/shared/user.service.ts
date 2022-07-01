@@ -9,7 +9,7 @@ export class UserService {
   httpHeaders = new HttpHeaders().set('content-type', 'application/json');
 
   readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
- //  readonly baseURL ='http://127.0.0.1:3000';
+  // readonly baseURL ='http://127.0.0.1:3000';
   // readonly baseURL ='http://localhost:3000';
 
   constructor(private http:HttpClient) { }
@@ -43,7 +43,17 @@ export class UserService {
 
   console.log("get Users");
   return this.http.get(`${this.baseURL}/getAllUsers`)
-
 }
+
+// get all users
+getAllNotifications(): Observable<any> {
+  const httpHeaders= new HttpHeaders({
+    'content-type' :'application/json',
+  });
+  console.log("get Notifications");
+  return this.http.get(`${this.baseURL}/getAllNotifications`)
+}
+
+
 
 }

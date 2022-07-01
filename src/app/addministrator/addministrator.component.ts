@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/shared/user.service';
 import {UserToken,UserModel} from 'src/app/shared/assets';
 import * as uuid from "uuid";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-addministrator',
@@ -21,7 +22,9 @@ export class AddministratorComponent implements OnInit {
   finalToken?:String="";
   testToken?:String="";
 
-  constructor(private service:UserService) {}
+  value: boolean=false;
+
+  constructor(private service:UserService,private router: Router) {}
 
   ngOnInit(): void {
     const myId = uuid.v4();
@@ -29,19 +32,19 @@ export class AddministratorComponent implements OnInit {
     console.log(myId);
     this. GetAllUsersWithDevices();
 
-
-    
   }
-
+  viewNotifications(){
+    console.log(this.value)
+    this.router.navigateByUrl('/notifications');
+    }
   OnSendNotification(){
     this.addToken();
  
     let data={
-
-     token: this.finalToken,
-     title:this.notificationTitle,
-     body:this.notificationBody
-
+      isSave:this.value,
+      token: this.finalToken,
+      title:this.notificationTitle,
+      body:this.notificationBody
     }
     this.service.postNotification(data)
     .subscribe(data => {
@@ -52,7 +55,7 @@ export class AddministratorComponent implements OnInit {
 
     
   }
-
+ 
 
   //new updates
 

@@ -18,6 +18,8 @@ import { UserComponent } from './user/user.component';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ShowNotificationsComponent } from './show-notifications/show-notifications.component';
+import {CheckboxModule} from 'primeng/checkbox';
 
 initializeApp(environment.firebase);
 
@@ -25,7 +27,8 @@ initializeApp(environment.firebase);
   declarations: [
     AppComponent,
     AddministratorComponent,
-    UserComponent
+    UserComponent,
+    ShowNotificationsComponent
 
   ],
   imports: [
@@ -40,7 +43,8 @@ initializeApp(environment.firebase);
     TableModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    CheckboxModule
     
   ],
   providers: [UserService],
