@@ -7,6 +7,7 @@ import cors from 'cors';
 import { mongoose } from 'mongoose';
 //import { DBUrl } from './config.js';
 import  {User}  from './models/user.js';
+import  {Notification}  from './models/notification.js';
 import http from 'https';
 
 
@@ -44,12 +45,16 @@ else{
    res.send(responseData);
 }
 });
-
+*/
 //send firebase notifications
 app.post('/send', async (req, res) => {
     notifications (req);
+    if(req.body.isSave){
+      saveNotifications (request)
+    }
 })
 
+/*
 //get all users
 app.get("/getAll", async (req, res) => {
   try {  
@@ -86,15 +91,45 @@ async function notifications (requestBody){
         reject(e.message);
     });
     
-    console.log(requestBody.body.token);
-    console.log(requestBody.body.token);
     const reqBody = '{"registration_ids": [ '+ requestBody.body.token + ' ], "priority": "high", "notification": {"title": "'+ requestBody.body.title + '", "body": " '+ requestBody.body.body + ' "}}';
     
     req.write(reqBody);
+    console.log("reqBody");
     console.log(reqBody);
     req.end();
  });
 }
+
+//add notifications
+app.post("/add_notification", async (request, response) => {
+   
+  try {
+    const post = new Notification(request.body);
+    if(post == null)throw Error("Empty body!");
+    await post.save();
+    console.log("add new Notification")
+    response.status(200).json({message:"add new Notification "});
+  }
+  catch (error) {
+    response.status(400).json({msg:"err"});
+   }
+  }
+)
+ 
+  //get all notifications 
+  app.get("/getAllNotifications", async (req, res) => {
+    try {     
+    const getNotifications = await Notification.find({});
+    if(!getNotifications)throw Error("Some thing worng");
+    console.log(getNotifications);
+    res.send(getNotifications);
+    } catch (error) {
+    res.status(400).json({msg:err});
+    }
+    }
+  );
+
+
 
 
 //new update
@@ -107,7 +142,7 @@ app.post("/add_user", async (request, response) => {
     //add new user
     if(findUser ==null){
       const post = new User(request.body);
-      if(!post)throw Error("Some thing worng");
+      if(post == null)throw Error("Some thing worng");
         await post.save();
         console.log("add new user")
         response.status(200).json({message:"add new user "});
@@ -272,6 +307,20 @@ app.post("/delete", async (request, response) => {
   );
 
 
+  async function saveNotifications (request){
+    try {
+      const post = new Notification(request.body);
+      if(post == null)throw Error("Empty body!");
+      await post.save();
+      console.log("add new Notification")
+      response.status(200).json({message:"add new Notification "});
+    }
+    catch (error) {
+      response.status(400).json({msg:"err"});
+     }
+    }
+      
+  
 
 
 export const apiData = serverless(app);
