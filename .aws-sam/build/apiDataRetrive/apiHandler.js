@@ -48,10 +48,23 @@ else{
 */
 //send firebase notifications
 app.post('/send', async (req, res) => {
-    notifications (req);
-    if(req.body.isSave){
-      console.log("IS SAVE CHECKED")
-      saveNotifications(req)
+  try {     
+    const sendNotifications = await  notifications(req);
+      console.log("Details send : "+ sendNotifications)
+    //  res.send(sendNotifications);
+     if(req.body.isSave && sendNotifications == "True"){
+        console.log("save Notifications:")
+        const saveNotificationsResponse  = await  saveNotifications(req)
+        console.log("Details save : "+ saveNotificationsResponse)
+        res.status(200).json({status:"True",message:"save and send"});
+       }
+       else{
+        res.status(200).json({status:"True",message:"only send"});
+      }
+   //  res.status(200).json({msg:"True"});
+    } 
+    catch (error) {
+    res.status(400).json({msg:err});
     }
 })
 
@@ -84,8 +97,9 @@ async function notifications (requestBody){
     };
     
     const req = http.request(options, (res) => {
-       resolve('success');
-      console.log("resolve test");
+       resolve('True');
+       console.log("resolve test");
+       
     });
     
     req.on('error', (e) => {
@@ -100,6 +114,20 @@ async function notifications (requestBody){
     req.end();
  });
 }
+async function saveNotifications (request){
+  try {
+    console.log("IS SAVE function")
+    const post = new Notification(request.body);
+    if(post == null)throw Error("Empty body!");
+    await post.save();
+  //  console.log("add new Notification")
+   return "saved"
+  }
+  catch (error) {
+   return   response.status(400).json({msg:"err"});
+   }
+  }
+    
 
 //add notifications
 app.post("/add_notification", async (request, response) => {
@@ -129,8 +157,6 @@ app.post("/add_notification", async (request, response) => {
     }
     }
   );
-
-
 
 
 //new update
@@ -306,23 +332,5 @@ app.post("/delete", async (request, response) => {
     }
     }
   );
-
-
-  async function saveNotifications (request){
-    try {
-      console.log("IS SAVE function")
-      const post = new Notification(request.body);
-      if(post == null)throw Error("Empty body!");
-      await post.save();
-      console.log("add new Notification")
-      response.status(200).json({message:"add new Notification "});
-    }
-    catch (error) {
-      response.status(400).json({msg:"err"});
-     }
-    }
-      
-  
-
-
-export const apiData = serverless(app);
+ 
+export const apiData = serverless(app); 
