@@ -20,6 +20,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ShowNotificationsComponent } from './show-notifications/show-notifications.component';
 import {CheckboxModule} from 'primeng/checkbox';
+import { HomeComponent } from './home/home.component';
+import {ProgressBarModule} from 'primeng/progressbar';
+
+import {ToastModule} from 'primeng/toast';
+import {RippleModule} from 'primeng/ripple';
 
 initializeApp(environment.firebase);
 
@@ -28,7 +33,8 @@ initializeApp(environment.firebase);
     AppComponent,
     AddministratorComponent,
     UserComponent,
-    ShowNotificationsComponent
+    ShowNotificationsComponent,
+    HomeComponent
 
   ],
   imports: [
@@ -44,7 +50,10 @@ initializeApp(environment.firebase);
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
-    CheckboxModule
+    CheckboxModule,
+    ProgressBarModule,
+    ToastModule,
+    RippleModule
     
   ],
   providers: [UserService],

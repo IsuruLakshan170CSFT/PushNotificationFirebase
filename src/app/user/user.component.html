@@ -10,7 +10,7 @@
   <h2>{{ message.notification.body }}</h2>
 </div>
 <div *ngIf="!message;">
- <h1>Notifications</h1>
+ <h4>User Login</h4>
 </div>
 <div class="row">
 
@@ -19,11 +19,8 @@
   </div>
 </div>
 <br />
-<mat-progress-bar 
-[hidden] ="isHiddenProgress"
-          [mode]="'indeterminate'">
-</mat-progress-bar>
 
+<p-progressBar [hidden]="isHiddenProgress" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
 <br />
 
 

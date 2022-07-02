@@ -2,18 +2,17 @@
  <div class="container">
     <div class="row height">
         <div class="col-4">
-           
         </div>
         <div class="col-4">
-            <h3> Webpush notifications</h3>
+            <h4>Administrator</h4>
          </div>
          <div class="col-4">
-            
          </div>
     </div>
+
     <div class="row">
       <div class="col-6">
-        <div class="secondTable">
+        <div>
             <p-table [value]="listOfAllUsers" [(selection)]="selectedlistOfUsers" dataKey="user" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
                     <tr>
@@ -48,41 +47,41 @@
       <div class="col-6">
         <div class="container">
             <div class="row">
-              <div class="col-4">
-                <label ><h4>Notification title</h4> </label>
+              <div class="col-6">
+                <label ><h5>Notification title</h5> </label>
               </div>
-              <div class="col-4">
+              <div class="col-6">
                 <input   [(ngModel)]="notificationTitle" placeholder="Title">
               </div>
             </div>
         
             <div class="row">
-                <div class="col-4">
-                    <label ><h4>Notification body</h4> </label>
+                <div class="col-6">
+                    <label ><h5>Notification body</h5> </label>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <input   [(ngModel)]="notificationBody"  placeholder="Body">
                 </div>
               </div>
         
 
               <div class="row">
-                <div class="col-4">
-                    <label ><h4>Save to database</h4> </label>
+                <div class="col-6">
+                    <label ><h5>Save to database</h5> </label>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                  <input type="checkbox" style="width: 40px;" [(ngModel)]="value">
                 </div>
               </div>
 
               <div class="row">
-              
-                <div class="col-4">
+
+                <div class="col-6">
                   <button type="submit" class="btn btn-primary" (click)="viewNotifications()">View Notifications</button>
                 </div>
-                <div class="col-4">
-                  
-                  <button type="submit" class="btn btn-primary" (click)="OnSendNotification()">Send</button>
+                <div class="col-6">
+                  <p-progressBar [hidden]="isHiddenProgress" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+                  <button type="submit" class="btn btn-primary"  [hidden] ="isHide"  (click)="OnSendNotification()">Send</button>
                 </div>
                 
               </div>

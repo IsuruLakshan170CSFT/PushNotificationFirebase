@@ -3,7 +3,8 @@ import { UserService } from 'src/app/shared/user.service';
 import {UserToken,UserModel} from 'src/app/shared/assets';
 import * as uuid from "uuid";
 import { Router } from '@angular/router';
-
+import {MessageService} from 'primeng/api';
+import { PrimeNGConfig } from 'primeng/api';
 @Component({
   selector: 'app-addministrator',
   templateUrl: './addministrator.component.html',
@@ -21,23 +22,24 @@ export class AddministratorComponent implements OnInit {
  
   finalToken?:String="";
   testToken?:String="";
-
+  isHiddenProgress?:boolean=true;
   value: boolean=false;
-
+  isHide: boolean=false;
   constructor(private service:UserService,private router: Router) {}
 
   ngOnInit(): void {
     const myId = uuid.v4();
-
     console.log(myId);
     this. GetAllUsersWithDevices();
 
   }
   viewNotifications(){
-    console.log(this.value)
     this.router.navigateByUrl('/notifications');
     }
   OnSendNotification(){
+    this.showSuccess();
+    this.isHide=true;
+    this.isHiddenProgress=false;
     this.addToken();
  
     let data={
@@ -48,14 +50,18 @@ export class AddministratorComponent implements OnInit {
     }
     this.service.postNotification(data)
     .subscribe(data => {
-
+      console.log(data.status)
+      console.log(data.message)
+      this.isHiddenProgress=true;
+      this.isHide=false;
     });
 
     this.notificationToken='';
 
     
   }
- 
+  showSuccess() {
+}
 
   //new updates
 

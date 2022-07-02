@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from './shared/user.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -10,12 +11,17 @@ import { UserService } from './shared/user.service';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private service:UserService) {}
+  constructor(private service:UserService,private router: Router) {}
   ngOnInit(): void {
 
   }
 
 
-      
+  navigateToAdmin(){
+    this.router.navigateByUrl('/addmin');
+    }
+  navigateToUser(){
+      this.router.navigateByUrl('/user');
+     }
 
 }
