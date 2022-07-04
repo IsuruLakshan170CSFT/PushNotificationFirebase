@@ -16,6 +16,7 @@ export class UserService {
 
   //send and save notifications
   postNotification(data: any): Observable<any> {
+    console.log(data);
     return this.http.post(`${this.baseURL}/send`, data);
   }
 
