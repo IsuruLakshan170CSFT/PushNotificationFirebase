@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/notification-services/user.service';
-import {UserModel} from 'src/app/notification-services/assets';
+import {UserModel,Receiver} from 'src/app/notification-services/assets';
 import { Router } from '@angular/router';
 import {MessageService} from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
@@ -20,7 +20,10 @@ export class AddministratorComponent implements OnInit {
   notificationTitle?:String="";
   notificationBody?:String="";
   notificationToken?:String="";
- 
+  //test
+  sendBy?:String="isuru";
+  sendFor: Receiver[]=[];
+
   finalToken?:String="";
   subToken?:String="";
   isHiddenProgress?:boolean=true;
@@ -48,7 +51,10 @@ export class AddministratorComponent implements OnInit {
       isSave:this.isCheck,
       token: this.finalToken,
       title:this.notificationTitle,
-      body:this.notificationBody
+      body:this.notificationBody,
+      sendBy:this.sendBy,
+      sendFor:this.sendFor,
+
     }
     this.service.postNotification(data)
     .subscribe(data => {
@@ -57,7 +63,8 @@ export class AddministratorComponent implements OnInit {
       this.isHiddenProgress=true;
       this.isHide=false;
     });
-    this.showSuccess()
+    this.showSuccess();
+    this.sendFor =[];
     this.selectedlistOfUsers=[];
     this.finalToken='';
     this.notificationTitle ='';
@@ -97,7 +104,7 @@ export class AddministratorComponent implements OnInit {
   addToken(){
 
     for(var i = 0; i < this.selectedlistOfUsers.length ; i++){
-        
+        this.sendFor.push(this.selectedlistOfUsers[i].user);
       for( let j=0;j < this.selectedlistOfUsers[i].device.length ;j++){
 
        this.subToken = '"'+this.selectedlistOfUsers[i].device[j].deviceToken+'"' ;

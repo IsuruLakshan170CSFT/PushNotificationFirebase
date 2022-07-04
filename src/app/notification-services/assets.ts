@@ -15,8 +15,12 @@ export interface UserModel {
     deviceToken:String
   ]
 
-  
 }
+
+export interface Receiver{ 
+    user:String,
+}
+
 
 
 
