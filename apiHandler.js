@@ -78,7 +78,7 @@ app.post("/addUser", async (req, res) => {
     const result = await run(functionName,req,res);
     if(!result)throw Error("Some thing worng");
     console.log(result);
-    res.send(result);
+    res.status(200).json({message:"suceess : "});
     } catch (error) {
     res.status(400).json({msg:err});
     }
@@ -170,8 +170,8 @@ app.post("/addUser", async (req, res) => {
         const findUser = await client.db("myFirstDatabase").collection("users").findOne({user:data.user});
         //add new user
         if(findUser == null){
-          const post = await clients.db("myFirstDatabase").collection("users").insertOne(data);;
-          return "add new user";
+          const post = await clients.db("myFirstDatabase").collection("users").insertOne(data);
+          return post;
 
         }
         //update exising user
