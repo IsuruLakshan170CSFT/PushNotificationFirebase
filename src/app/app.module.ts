@@ -7,7 +7,7 @@ import { environment } from "../environments/environment";
 import { initializeApp } from "firebase/app";
 import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { UserService } from './shared/user.service';
+import { UserService } from './notification-services/user.service';
 import {ListboxModule} from 'primeng/listbox';
 import {TabViewModule} from 'primeng/tabview';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,7 +24,6 @@ import {ProgressBarModule} from 'primeng/progressbar';
 
 import {ToastModule} from 'primeng/toast';
 import {RippleModule} from 'primeng/ripple';
-import { NotificationPopupComponent } from './notification-popup/notification-popup.component';
 
 initializeApp(environment.firebase);
 
@@ -33,10 +32,7 @@ initializeApp(environment.firebase);
     AppComponent,
     AddministratorComponent,
     UserComponent,
-    ShowNotificationsComponent,
-    NotificationPopupComponent,
-  
-
+    ShowNotificationsComponent
   ],
   imports: [
     BrowserModule,

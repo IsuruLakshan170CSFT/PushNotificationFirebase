@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../shared/user.service';
+import { UserService } from '../notification-services/user.service';
 
 @Component({
   selector: 'app-show-notifications',
@@ -16,18 +16,15 @@ export class ShowNotificationsComponent implements OnInit {
     this.GetAllNotifications();
   }
 
-  //new updates
-
+//get all notifications
   GetAllNotifications(){
     this.service.getAllNotifications()
     .subscribe
     (
       data=>{
-        console.log(data);
         for(var i = 0; i < data.length ; i++){
           this.notificationsArray.push(data[i]);
           }
-        console.log(this.notificationsArray.length);
       }
     );
   }

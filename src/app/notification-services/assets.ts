@@ -7,10 +7,6 @@
 }
 
 
-export interface UserToken { 
-  token: String;
-}
-
 export interface UserModel { 
   user:String,
   device:[

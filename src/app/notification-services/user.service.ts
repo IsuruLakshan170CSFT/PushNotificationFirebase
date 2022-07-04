@@ -14,46 +14,35 @@ export class UserService {
 
   constructor(private http:HttpClient) { }
 
-
+  //send and save notifications
   postNotification(data: any): Observable<any> {
-    console.log("Post notification");
-    console.log(data);
     return this.http.post(`${this.baseURL}/send`, data);
   }
 
-  //new updates
+  //add user
   postUser(data: any): Observable<any> {
-    console.log("Post User Data");
-    console.log(data);
     return this.http.post(`${this.baseURL}/add_user`, data);
   }
 
+  //remove user
   postRemoveUser(data: any): Observable<any> {
-    console.log("Remove User Data");
-    console.log(data);
     return this.http.post(`${this.baseURL}/delete`, data);
   }
-  
 
  // get all users
  getAllUsers(): Observable<any> {
   const httpHeaders= new HttpHeaders({
     'content-type' :'application/json',
   });
-
-  console.log("get Users");
   return this.http.get(`${this.baseURL}/getAllUsers`)
 }
 
-// get all users
+// get all notifications
 getAllNotifications(): Observable<any> {
   const httpHeaders= new HttpHeaders({
     'content-type' :'application/json',
   });
-  console.log("get Notifications");
   return this.http.get(`${this.baseURL}/getAllNotifications`)
-}
-
-
+  }
 
 }

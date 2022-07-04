@@ -1,36 +1,36 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/shared/user.service';
-import {UserToken,UserModel} from 'src/app/shared/assets';
-import * as uuid from "uuid";
+import { UserService } from 'src/app/notification-services/user.service';
+import {UserModel} from 'src/app/notification-services/assets';
 import { Router } from '@angular/router';
 import {MessageService} from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
+
 @Component({
   selector: 'app-addministrator',
   templateUrl: './addministrator.component.html',
-  styleUrls: ['./addministrator.component.scss']
+  styleUrls: ['./addministrator.component.scss'],
+  providers: [MessageService]
 })
+
 export class AddministratorComponent implements OnInit {
 
   listOfAllUsers: UserModel[]=[];
   selectedlistOfUsers: any[]=[];
-  selectedUsersToken:UserToken[]=[];
 
   notificationTitle?:String="";
   notificationBody?:String="";
   notificationToken?:String="";
  
   finalToken?:String="";
-  testToken?:String="";
+  subToken?:String="";
   isHiddenProgress?:boolean=true;
   isHideMessage?:boolean=true;
-  value: boolean=false;
+  isCheck: boolean=false;
   isHide: boolean=false;
-  constructor(private service:UserService,private router: Router) {}
+
+  constructor(private service:UserService,private router: Router,private messageService: MessageService, private primengConfig: PrimeNGConfig) {}
 
   ngOnInit(): void {
-    const myId = uuid.v4();
-    console.log(myId);
     this. GetAllUsersWithDevices();
 
   }
@@ -45,7 +45,7 @@ export class AddministratorComponent implements OnInit {
     console.log(this.finalToken?.length);
    if(this.finalToken?.length != 0){
     let data={
-      isSave:this.value,
+      isSave:this.isCheck,
       token: this.finalToken,
       title:this.notificationTitle,
       body:this.notificationBody
@@ -57,13 +57,15 @@ export class AddministratorComponent implements OnInit {
       this.isHiddenProgress=true;
       this.isHide=false;
     });
+    this.showSuccess()
     this.selectedlistOfUsers=[];
     this.finalToken='';
     this.notificationTitle ='';
     this.notificationBody ='';
-    this.value =false;
+    this.isCheck =false;
    }
    else{
+    this. showError();
     this.isHiddenProgress=true;
     this.isHide=false;
     this.isHideMessage = false;
@@ -71,8 +73,12 @@ export class AddministratorComponent implements OnInit {
     
   }
 
-
-  //new updates
+  showSuccess() {
+    this.messageService.add({severity:'success', summary: 'Success', detail: 'Successfully Send'});
+  }
+  showError() {
+    this.messageService.add({severity:'error', summary: 'Error', detail: 'No Selected Customers'});
+  }
 
   GetAllUsersWithDevices(){
     this.service.getAllUsers()
@@ -94,17 +100,15 @@ export class AddministratorComponent implements OnInit {
         
       for( let j=0;j < this.selectedlistOfUsers[i].device.length ;j++){
 
-       this.testToken = '"'+this.selectedlistOfUsers[i].device[j].deviceToken+'"' ;
+       this.subToken = '"'+this.selectedlistOfUsers[i].device[j].deviceToken+'"' ;
 
        if(i == 0 && j == 0){
-         this.finalToken =  ''+ this.testToken +'';
+         this.finalToken =  ''+ this.subToken +'';
        }
         else{
-         this.finalToken =  ''+ this.finalToken +','+ this.testToken +'';
+         this.finalToken =  ''+ this.finalToken +','+ this.subToken +'';
        } 
       }
+    }
   }
- 
-  }
-
 }
