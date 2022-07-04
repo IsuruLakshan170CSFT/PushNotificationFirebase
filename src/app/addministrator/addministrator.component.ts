@@ -23,6 +23,7 @@ export class AddministratorComponent implements OnInit {
   finalToken?:String="";
   testToken?:String="";
   isHiddenProgress?:boolean=true;
+  isHideMessage?:boolean=true;
   value: boolean=false;
   isHide: boolean=false;
   constructor(private service:UserService,private router: Router) {}
@@ -37,11 +38,12 @@ export class AddministratorComponent implements OnInit {
     this.router.navigateByUrl('/notifications');
     }
   OnSendNotification(){
-    this.showSuccess();
+    this.isHideMessage = true;
     this.isHide=true;
     this.isHiddenProgress=false;
     this.addToken();
- 
+    console.log(this.finalToken?.length);
+   if(this.finalToken?.length != 0){
     let data={
       isSave:this.value,
       token: this.finalToken,
@@ -55,13 +57,20 @@ export class AddministratorComponent implements OnInit {
       this.isHiddenProgress=true;
       this.isHide=false;
     });
-
-    this.notificationToken='';
-
+    this.selectedlistOfUsers=[];
+    this.finalToken='';
+    this.notificationTitle ='';
+    this.notificationBody ='';
+    this.value =false;
+   }
+   else{
+    this.isHiddenProgress=true;
+    this.isHide=false;
+    this.isHideMessage = false;
+   }
     
   }
-  showSuccess() {
-}
+
 
   //new updates
 
@@ -95,7 +104,7 @@ export class AddministratorComponent implements OnInit {
        } 
       }
   }
-  console.log(this.finalToken);
+ 
   }
 
 }
