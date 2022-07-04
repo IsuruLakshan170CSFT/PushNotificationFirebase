@@ -4,6 +4,8 @@ const NotificationSchema =mongoose.Schema(
     {
         title: String,
         body: String,
+        sendBy:String,
+        sendFor:Array,
         
     }, {
         timestamps: true

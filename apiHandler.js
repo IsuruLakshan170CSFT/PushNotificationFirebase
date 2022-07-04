@@ -127,8 +127,7 @@ async function saveNotifications (request){
    return   response.status(400).json({msg:"err"});
    }
   }
-    
-
+  
 //add notifications
 app.post("/add_notification", async (request, response) => {
    
