@@ -5,11 +5,11 @@ import express from 'express';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
 
-const uri =
-"mongodb+srv://StDB:lrJKqTsc8nNSgoIP@cluster0.izid3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-
+const uri ="mongodb+srv://StDB:lrJKqTsc8nNSgoIP@cluster0.izid3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const dbName="myFirstDatabase";
+const userCollection="users";
+const notificationCollection="notifications"
 const client = new MongoClient(uri);
-
 const app = express();
 app.use(cors());
 
@@ -19,7 +19,7 @@ app.use(express.json());
  async function run(functionName,req,res) {
   try {
     await client.connect();
-    await client.db("myFirstDatabase").command({ ping: 1 });
+    await client.db(dbName).command({ ping: 1 });
     console.log("Connected successfully to server");
     const response = await switchFunction(client,functionName,req,res);
     return response
@@ -111,7 +111,7 @@ app.post("/addUser", async (req, res) => {
   //get all notifications
   async function getAllNotifications(clients,req,res) {
   
-    const result = await clients.db("myFirstDatabase").collection("notifications").find({}).toArray();
+    const result = await clients.db(dbName).collection(notificationCollection).find({}).toArray();
     if (result) {
 
         const results=result;
@@ -124,7 +124,7 @@ app.post("/addUser", async (req, res) => {
   //get all users
   async function getAllUsers(clients,req,res) {
   
-    const result = await clients.db("myFirstDatabase").collection("users").find({}).toArray();
+    const result = await clients.db(dbName).collection(userCollection).find({}).toArray();
     if (result) {
         const results=result;
         return results;
@@ -143,7 +143,7 @@ app.post("/addUser", async (req, res) => {
       }
   
       try{
-        const result = await clients.db("myFirstDatabase").collection("notifications").insertOne(data);
+        const result = await clients.db(dbName).collection(notificationCollection).insertOne(data);
         return "add new notification content";
 
       }catch{
@@ -152,8 +152,7 @@ app.post("/addUser", async (req, res) => {
    
     }
    
-
-      //add or update user 
+  //add or update user 
  async function addUser(clients,req,res) {
       const data ={
         user: req.body.user,
@@ -167,10 +166,10 @@ app.post("/addUser", async (req, res) => {
   
        try {
         const deviceData =data.device;
-        const findUser = await client.db("myFirstDatabase").collection("users").findOne({user:data.user});
+        const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
         //add new user
         if(findUser == null){
-          const post = await clients.db("myFirstDatabase").collection("users").insertOne(data);
+          const post = await clients.db(dbName).collection(userCollection).insertOne(data);
           return post;
 
         }
@@ -179,14 +178,14 @@ app.post("/addUser", async (req, res) => {
           //update existing User 
           //check device is existing or not
           const query = { user: data.user, "device.deviceId": deviceData[0].deviceId };
-          const findUserDevice = await client.db("myFirstDatabase").collection("users").findOne(query);
+          const findUserDevice = await client.db(dbName).collection(userCollection).findOne(query);
       //    console.log(findUserDevice);
           if(findUserDevice){
             //update existing device token
             const updateDocument = {
               $set: { "device.$.deviceToken": deviceData[0].deviceToken }
             };
-            const result = await client.db("myFirstDatabase").collection("users").updateOne(query, updateDocument);
+            const result = await client.db(dbName).collection(userCollection).updateOne(query, updateDocument);
             console.log("updated existing device in existing user");
             return "updated existing device in existing user";
           }
@@ -229,9 +228,9 @@ app.post("/addUser", async (req, res) => {
             const newDevicescreate =  "{ " + ' "device" ' +": [ "+ allDevString + "] }" ;
         const obj = JSON.parse(newDevicescreate);
       //  console.log( obj);
-    //  const result = await client.db("myFirstDatabase").collection("users").updateOne(query, obj);
+    //  const result = await client.db(dbName).collection("users").updateOne(query, obj);
 
-        const post = await client.db("myFirstDatabase").collection("users").findOneAndUpdate({user:findUser.user},{$set:obj});
+        const post = await client.db(dbName).collection(userCollection).findOneAndUpdate({user:findUser.user},{$set:obj});
         console.log( post);
    
        return "updated";
