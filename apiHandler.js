@@ -3,33 +3,14 @@
 import serverless from 'serverless-http';
 import express from 'express';
 import cors from 'cors';
-import { MongoClient } from 'mongodb';
 import http from 'https';
+import {authHeader,dbName,userCollection,notificationCollection } from './config.js';
+import { run} from './dbConnect.js'
 
-const authHeader ='key=AAAAHwhqxaw:APA91bGLH_ceCg20S-psBpysf974Yam1mGb0pGxEPIfX_Q_TgjihG4p_j513rD46CCAMzP9e0bemJFJMhKf3TDMwcsL-ws2PJySrf9RN8q9mm_ShzkcK3cBJsXx0A2LDT8BEvruUMs_j';
-const uri ="mongodb+srv://StDB:lrJKqTsc8nNSgoIP@cluster0.izid3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const dbName="myFirstDatabase";
-const userCollection="users";
-const notificationCollection="notifications"
-
-const client = new MongoClient(uri);
 const app = express();
 app.use(cors());
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
- async function run(functionName,req,res) {
-  try {
-    await client.connect();
-    await client.db(dbName).command({ ping: 1 });
-    console.log("Connected successfully to server");
-    const response = await switchFunction(client,functionName,req,res);
-    return response
-  } finally {
-    await client.close();
-  }
-  }
 
   //get all  users api
   app.get("/getAllUsers", async (req, res) => {
@@ -403,3 +384,5 @@ async function deleteUser(clients,req,res) {
 
 
 export const apiData = serverless(app); 
+
+export {switchFunction}
