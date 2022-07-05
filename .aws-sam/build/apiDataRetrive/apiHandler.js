@@ -85,10 +85,22 @@ app.post("/addUser", async (req, res) => {
     }
 )
 
-
-
+//delete user
+app.post("/deleteUser", async (req, res) => {
+   
+  try {     
+    const functionName="deleteUser";
+    const result = await run(functionName,req,res);
+    if(!result)throw Error("Some thing worng");
+    console.log(result);
+    res.status(200).json({message:"successfully deleted : "});
+    } catch (error) {
+    res.status(400).json({msg:err});
+    }
+    }
+)
   //swich functions
-  async function switchFunction(client,functionName,req,res) {
+ async function switchFunction(client,functionName,req,res) {
 
     if(functionName == "getAllNotifications"){
       const result=await getAllNotifications(client,req,res);
@@ -104,6 +116,10 @@ app.post("/addUser", async (req, res) => {
     }
     else if(functionName == "addUser"){
       const result=await addUser(client,req,res);
+      return  result;
+    }
+    else if(functionName == "deleteUser"){
+      const result=await deleteUser(client,req,res);
       return  result;
     }
   }
@@ -249,4 +265,82 @@ app.post("/addUser", async (req, res) => {
       }
    }
  
+async function deleteUser(clients,req,res) {
+  const data ={
+    user: req.body.user,
+    device:[
+      { deviceId:req.body.device[0].deviceId, 
+        deviceName:req.body.device[0].deviceName,
+        deviceToken: req.body.device[0].deviceToken}
+    ],
+   }
+  try {
+    const deviceData =data.device;
+    const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
+    //user is not in database
+    if(findUser == null){
+   
+        return "This user is not exist"
+    }
+    //if user exist in database
+    else{
+      //update existing User 
+      //check device is existing or not
+      const query = { user: data.user, "device.deviceId": deviceData[0].deviceId };
+      const findUserDevice = await client.db(dbName).collection(userCollection).findOne(query);
+
+      if(findUserDevice){
+        //update existing device token
+        try { 
+        
+          const allExistingDevices =findUser.device;
+          const deviceCount =Object.keys(allExistingDevices).length;
+        
+          const newConvertedDevices = new Array ;
+          for(let i = 0 ;i< deviceCount;i++){
+                
+            if(allExistingDevices[i].deviceId != data.device[0].deviceId ){    
+              const newDevice=  {
+                deviceId: allExistingDevices[i].deviceId ,
+                deviceName: allExistingDevices[i].deviceName,
+                deviceToken:allExistingDevices[i].deviceToken,            
+              };
+              newConvertedDevices.push(newDevice);
+            }               
+          }
+          var allDevString="";
+          for(let i = 0 ; i < newConvertedDevices.length;i++){
+            const tempSting=  "{ " + ' "deviceId" ' +": " +  '"' + newConvertedDevices[i].deviceId + '"'  +"," +' "deviceName" '+ " : " + '"' + newConvertedDevices[i].deviceName +'"'  + "," + ' "deviceToken" ' +":" +'"' +newConvertedDevices[i].deviceToken + '"'  + " }" ; 
+            if(i == 0){
+              allDevString = tempSting;
+            }
+            else{
+              allDevString = allDevString + "," + tempSting;
+            } 
+          }
+            const newDevicescreate =  "{ " + ' "device" ' +": [ "+ allDevString + "] }" ;
+        const obj = JSON.parse(newDevicescreate);
+      //  console.log( obj);
+      const post = await client.db(dbName).collection(userCollection).findOneAndUpdate({user:findUser.user},{$set:obj});
+    
+       return "remove a device in existing user";
+
+        } catch (error) {
+          response.status(400).json({msg:"err"});
+        } 
+      }
+      else{
+   
+     return "Erro This device is not in this user";
+      }
+    }
+
+  } catch (error) {
+      response.status(400).json({msg:"error"});
+  }
+
+
+
+
+   }
 export const apiData = serverless(app); 
