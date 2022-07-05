@@ -3,28 +3,13 @@
 import serverless from 'serverless-http';
 import express from 'express';
 import cors from 'cors';
-import { MongoClient } from 'mongodb';
 import http from 'https';
-import {authHeader,uri,dbName,userCollection,notificationCollection } from './config.js';
+import {authHeader,dbName,userCollection,notificationCollection } from './config.js';
 import { run} from './dbConnect.js'
-
 const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-//  async function run(functionName,req,res) {
-//   const client = new MongoClient(uri);
-//   try {
-//     await client.connect();
-//     await client.db(dbName).command({ ping: 1 });
-//     console.log("Connected successfully to server");
-//     const response = await switchFunction(client,functionName,req,res);
-//     return response
-//   } finally {
-//     await client.close();
-//   }
-//   }
 
   //get all  users api
   app.get("/getAllUsers", async (req, res) => {
@@ -87,7 +72,7 @@ app.post("/addUser", async (req, res) => {
     console.log(result);
     res.status(200).json({message:"suceess : "});
     } catch (error) {
-    res.status(400).json({msg:err});
+    res.status(400).json({msg:"err"});
     }
     }
 )
@@ -182,7 +167,7 @@ app.post("/deleteUser", async (req, res) => {
     }
    
   //add or update user 
- async function addUser(clients,req,res) {
+ async function addUser(client,req,res) {
       const data ={
         user: req.body.user,
         device:[
@@ -198,7 +183,7 @@ app.post("/deleteUser", async (req, res) => {
         const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
         //add new user
         if(findUser == null){
-          const post = await clients.db(dbName).collection(userCollection).insertOne(data);
+          const post = await client.db(dbName).collection(userCollection).insertOne(data);
           return post;
 
         }
@@ -278,7 +263,7 @@ app.post("/deleteUser", async (req, res) => {
       }
    }
  
-async function deleteUser(clients,req,res) {
+async function deleteUser(client,req,res) {
   const data ={
     user: req.body.user,
     device:[
