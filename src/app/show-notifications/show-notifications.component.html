@@ -12,13 +12,17 @@
                                     <th>Title</th>
                                     <th>Body</th>
                                     <th>Date</th>
+                                    <th>Send By</th>
+                                    <th>Send For</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-notification>
                                 <tr>
                                     <td>{{notification.title}} </td>
                                     <td>{{notification.body}}</td>
-                                    <td>{{notification.createdAt}}</td>
+                                    <td>{{notification.time}}</td>
+                                    <td>{{notification.sendBy}}</td>
+                                    <td>{{notification.sendFor}}</td>
                                 </tr>
                             </ng-template>
                         </p-table>
