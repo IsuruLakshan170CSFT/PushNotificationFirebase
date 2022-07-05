@@ -4,7 +4,9 @@ import serverless from 'serverless-http';
 import express from 'express';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
+import http from 'https';
 
+const authHeader ='key=AAAAHwhqxaw:APA91bGLH_ceCg20S-psBpysf974Yam1mGb0pGxEPIfX_Q_TgjihG4p_j513rD46CCAMzP9e0bemJFJMhKf3TDMwcsL-ws2PJySrf9RN8q9mm_ShzkcK3cBJsXx0A2LDT8BEvruUMs_j';
 const uri ="mongodb+srv://StDB:lrJKqTsc8nNSgoIP@cluster0.izid3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const dbName="myFirstDatabase";
 const userCollection="users";
@@ -59,13 +61,22 @@ app.use(express.json());
 app.post("/addNotification", async (req, res) => {
    
   try {     
+    var result="";
     const functionName="addNotification";
-    const result = await run(functionName,req,res);
+    const notificationResult = await sendNotification(req)
+    if(notificationResult == "True" && req.body.isSave == true){
+     const saveResult = await run(functionName,req,res);
+     result=saveResult;
+    }
+    else{
+      result =notificationResult;
+    }
+
     if(!result)throw Error("Some thing worng");
     console.log(result);
-    res.send(result);
+    res.status(200).json({message:"success : "});
     } catch (error) {
-    res.status(400).json({msg:err});
+    res.status(400).json({msg:"err"});
     }
     }
 )
@@ -112,6 +123,7 @@ app.post("/deleteUser", async (req, res) => {
     }
     else if(functionName == "addNotification"){
       const result=await addNotification(client,req,res);
+
       return  result;
     }
     else if(functionName == "addUser"){
@@ -151,11 +163,16 @@ app.post("/deleteUser", async (req, res) => {
  
     //post notification
     async function addNotification(clients,req,res) {
+    
+      const today = new Date();
+      const currentDateTime = today.toGMTString();  
+
       const data ={
         title: req.body.title,
         body: req.body.body,
         sendBy:req.body.sendBy,
         sendFor:req.body.sendFor,
+        time:currentDateTime
       }
   
       try{
@@ -342,5 +359,46 @@ async function deleteUser(clients,req,res) {
 
 
 
-   }
+ }
+
+ //send firebase notifications
+ async function sendNotification(requestBody) {
+
+  let data ={
+    title: requestBody.body.title,
+    body: requestBody.body.body,
+    token:requestBody.body.token
+  }
+
+  return new Promise((resolve, reject) => {
+    const options = {
+        host: "fcm.googleapis.com",
+        path: "/fcm/send",
+        method: 'POST',
+        headers: {
+            'Authorization': authHeader,
+            'Content-Type': 'application/json'
+        }
+    };
+    
+    const req = http.request(options, (res) => {
+       resolve('True');
+       console.log("resolve test");
+       
+    });
+    
+    req.on('error', (e) => {
+        reject(e.message);
+    });
+    
+    const reqBody = '{"registration_ids": [ '+ data.token + ' ], "priority": "high", "notification": {"title": "'+ data.title + '", "body": " '+ data.body + ' "}}';
+    
+    req.write(reqBody);
+    console.log("reqBody");
+    console.log(reqBody);
+    req.end();
+ });
+ }
+
+
 export const apiData = serverless(app); 
