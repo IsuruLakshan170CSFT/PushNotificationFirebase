@@ -16,6 +16,8 @@ import { ShowNotificationsComponent } from './show-notifications/show-notificati
 import {CheckboxModule} from 'primeng/checkbox';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {ToastModule} from 'primeng/toast';
+import { MyNotificationsComponent } from './my-notifications/my-notifications.component';
+import { TimeConvertComponent } from './time-convert/time-convert.component';
 
 initializeApp(environment.firebase);
 
@@ -24,7 +26,9 @@ initializeApp(environment.firebase);
     AppComponent,
     AddministratorComponent,
     UserComponent,
-    ShowNotificationsComponent
+    ShowNotificationsComponent,
+    MyNotificationsComponent,
+    TimeConvertComponent
   ],
   imports: [
     BrowserModule,
