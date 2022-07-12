@@ -27,9 +27,22 @@ app.use(express.json());
 
   //get all notification api
   app.get("/getAllNotifications", async (req, res) => {
+    
+    let numberOfRows=req.query.rows;
+    let currentItemCount =req.query.first;
+
+    console.log("Number of rows : " + numberOfRows);
+    console.log("Current Item count : " + currentItemCount);
+  
+
+
     try {     
     const functionName="getAllNotifications";
     const result = await run(functionName,req,res);
+
+
+   // const slicedArray = array.slice(currentItemCount, currentItemCount+currentItemCount);
+
     if(!result)throw Error("Some thing worng");
     console.log(result);
     res.send(result);
