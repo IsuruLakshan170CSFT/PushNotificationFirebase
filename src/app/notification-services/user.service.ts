@@ -8,7 +8,7 @@ export class UserService {
   
   httpHeaders = new HttpHeaders().set('content-type', 'application/json');
 
-  // readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
+ //readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
   readonly baseURL ='http://127.0.0.1:3000';
   // readonly baseURL ='http://localhost:3000';
 
@@ -38,12 +38,51 @@ export class UserService {
   return this.http.get(`${this.baseURL}/getAllUsers`)
 }
 
+ // get all userstest
+ getAllUserstest(params?: any): Observable<any> {
+  const httpHeaders= new HttpHeaders({
+    'content-type' :'application/json',
+  });
+  return this.http.get(`${this.baseURL}/getAllUsers`,{params:params})
+}
+
+ // get all users length
+ getAllUsersLength(): Observable<any> {
+  const httpHeaders= new HttpHeaders({
+    'content-type' :'application/json',
+  });
+  return this.http.get(`${this.baseURL}/getAllUsersLength`)
+}
+
+
 // get all notifications
 getAllNotifications(): Observable<any> {
   const httpHeaders= new HttpHeaders({
     'content-type' :'application/json',
   });
   return this.http.get(`${this.baseURL}/getAllNotifications`)
+  }
+
+
+  getCustomers(params?: any) {
+    let  apiUrl = 'https://www.primefaces.org/data/customers'
+    return this.http.get<any>(apiUrl, {params: params}).toPromise();
+  }
+
+  // get all notifications
+getAllNotificationstest(params?: any): Observable<any> {
+  const httpHeaders= new HttpHeaders({
+    'content-type' :'application/json',
+  });
+  return this.http.get(`${this.baseURL}/getAllNotifications`,{params:params})
+  }
+
+  // get all notification length
+  getAllNotificationsLength(): Observable<any> {
+  const httpHeaders= new HttpHeaders({
+    'content-type' :'application/json',
+  });
+  return this.http.get(`${this.baseURL}/getAllNotificationsLength`)
   }
 
 }
