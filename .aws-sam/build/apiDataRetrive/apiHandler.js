@@ -13,41 +13,76 @@ app.use(express.json());
 
   //get all  users api
   app.get("/getAllUsers", async (req, res) => {
+
+    
+    let numberOfRows= parseInt(req.query.rows);
+    let currentItemCount =parseInt(req.query.first);
+    let finalLength=currentItemCount+numberOfRows;
+
     try {     
     const functionName="getAllUsers";
     const result = await run(functionName,req,res);
+    const slicedArray = result.slice(currentItemCount,finalLength);
+
     if(!result)throw Error("Some thing worng");
-    console.log(result);
-    res.send(result);
+   // console.log(result);
+    res.send(slicedArray);
+    } catch (error) {
+    res.status(400).json({msg:err});
+    }
+    }
+  );
+    //get all  users array length
+    app.get("/getAllUsersLength", async (req, res) => {
+
+  
+      try {     
+      const functionName="getAllUsers";
+      const result = await run(functionName,req,res);
+      if(!result)throw Error("Some thing worng");
+      const resultLength=result.length;
+      res.status(200).json({length:resultLength});
+      } catch (error) {
+      res.status(400).json({msg:err});
+      }
+      }
+    );
+  
+
+  //get all notification api
+  app.get("/getAllNotifications", async (req, res) => {
+    
+    let numberOfRows= parseInt(req.query.rows);
+    let currentItemCount =parseInt(req.query.first);
+    let finalLength=currentItemCount+numberOfRows;
+  //  console.log("Number of rows : " + numberOfRows);
+  //  console.log("Current Item count : " + currentItemCount);
+    try {     
+    const functionName="getAllNotifications";
+    const result = await run(functionName,req,res);
+  
+    const slicedArray = result.slice(currentItemCount,finalLength);
+   // console.log( "final lenth  : "+finalLength);
+  
+    if(!result)throw Error("Some thing worng");
+  //  console.log( "slice array length : "+slicedArray.length);
+    res.send(slicedArray);
     } catch (error) {
     res.status(400).json({msg:err});
     }
     }
   );
 
-  //get all notification api
-  app.get("/getAllNotifications", async (req, res) => {
-    
-    let numberOfRows=req.query.rows;
-    let currentItemCount =req.query.first;
-
-    console.log("Number of rows : " + numberOfRows);
-    console.log("Current Item count : " + currentItemCount);
-  
-
-
+  //get all notification array length
+  app.get("/getAllNotificationsLength", async (req, res) => {
     try {     
     const functionName="getAllNotifications";
     const result = await run(functionName,req,res);
-
-
-   // const slicedArray = array.slice(currentItemCount, currentItemCount+currentItemCount);
-
     if(!result)throw Error("Some thing worng");
-    console.log(result);
-    res.send(result);
+    const resultLength=result.length;
+    res.status(200).json({length:resultLength});
     } catch (error) {
-    res.status(400).json({msg:err});
+    res.status(400).json({msg:error});
     }
     }
   );
