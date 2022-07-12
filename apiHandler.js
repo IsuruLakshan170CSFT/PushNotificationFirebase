@@ -47,7 +47,6 @@ app.use(express.json());
       }
       }
     );
-  
 
   //get all notification api
   app.get("/getAllNotifications", async (req, res) => {
