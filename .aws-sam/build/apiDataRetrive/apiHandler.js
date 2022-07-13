@@ -47,7 +47,6 @@ app.use(express.json());
       }
       }
     );
-  
 
   //get all notification api
   app.get("/getAllNotifications", async (req, res) => {
@@ -55,18 +54,70 @@ app.use(express.json());
     let numberOfRows= parseInt(req.query.rows);
     let currentItemCount =parseInt(req.query.first);
     let finalLength=currentItemCount+numberOfRows;
-  //  console.log("Number of rows : " + numberOfRows);
-  //  console.log("Current Item count : " + currentItemCount);
+
+    let sortField= req.query.sortField;
+    let sortOrder= req.query.sortOrder;
+
+    var arry =[];
+ 
     try {     
     const functionName="getAllNotifications";
     const result = await run(functionName,req,res);
-  
-    const slicedArray = result.slice(currentItemCount,finalLength);
+    console.log("result");
+    console.log(result[0].title);
+
+    // if(sortOrder == "1"){
+    //   console.log("1");
+    // arry = result.sort(function(a, b) {
+    //   return parseFloat(a.title) - parseFloat(b.title);
+    // });
+    // console.log("1");
+    // console.log(arry[0].title);
+    // }
+    // else
+    //   { console.log("-1");
+    // arry = result.sort(function(a, b) {
+    //   return parseFloat(b.title) - parseFloat(a.title);
+    //   });
+    //   console.log("-1");
+    //   console.log(arry[0].title);
+    //   }
+
+    if(sortOrder == "1" && sortField =="time"){
+      console.log("1");
+       arry = result.sort(function (a, b) {
+        var dateA = new Date(a.time), dateB = new Date(b.time)
+        return dateA - dateB
+      });
+    }
+    else
+      { console.log("-1");
+       arry = result.sort(function (a, b) {
+        var dateA = new Date(a.time), dateB = new Date(b.time)
+        return dateB - dateA
+      });
+      
+      }
+    const slicedArray = arry.slice(currentItemCount,finalLength);
    // console.log( "final lenth  : "+finalLength);
   
     if(!result)throw Error("Some thing worng");
   //  console.log( "slice array length : "+slicedArray.length);
     res.send(slicedArray);
+    } catch (error) {
+    res.status(400).json({msg:err});
+    }
+    }
+  );
+
+  //get all notification list
+  app.get("/getAllNotificationsList", async (req, res) => {
+
+    try {     
+    const functionName="getAllNotifications";
+    const result = await run(functionName,req,res);
+    if(!result)throw Error("Some thing worng");
+    res.send(result);
     } catch (error) {
     res.status(400).json({msg:err});
     }
