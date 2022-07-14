@@ -54,61 +54,52 @@ app.use(express.json());
     let numberOfRows= parseInt(req.query.rows);
     let currentItemCount =parseInt(req.query.first);
     let finalLength=currentItemCount+numberOfRows;
+    let filter =req.query.filters;
+    console.log(filter);
+    // let list =filter[title];
+    // console.log("list : "+list);
+    // let list1 =filter["title"];
+    // console.log("list1 : "+list1);
 
     let sortField= req.query.sortField;
     let sortOrder= req.query.sortOrder;
-
     var arry =[];
- 
     try {     
     const functionName="getAllNotifications";
     const result = await run(functionName,req,res);
-    console.log("result");
-    console.log(result[0].title);
-
-    // if(sortOrder == "1"){
-    //   console.log("1");
-    // arry = result.sort(function(a, b) {
-    //   return parseFloat(a.title) - parseFloat(b.title);
-    // });
-    // console.log("1");
-    // console.log(arry[0].title);
-    // }
-    // else
-    //   { console.log("-1");
-    // arry = result.sort(function(a, b) {
-    //   return parseFloat(b.title) - parseFloat(a.title);
-    //   });
-    //   console.log("-1");
-    //   console.log(arry[0].title);
-    //   }
-
-    if(sortOrder == "1" && sortField =="time"){
-      console.log("1");
-       arry = result.sort(function (a, b) {
-        var dateA = new Date(a.time), dateB = new Date(b.time)
-        return dateA - dateB
-      });
+    if(sortField =="undefined"){
+      arry = sort_by_key(result, 'time','-1');
     }
-    else
-      { console.log("-1");
-       arry = result.sort(function (a, b) {
-        var dateA = new Date(a.time), dateB = new Date(b.time)
-        return dateB - dateA
-      });
-      
-      }
+    else{
+       arry = sort_by_key(result, sortField,sortOrder);
+
+    }
     const slicedArray = arry.slice(currentItemCount,finalLength);
-   // console.log( "final lenth  : "+finalLength);
-  
     if(!result)throw Error("Some thing worng");
-  //  console.log( "slice array length : "+slicedArray.length);
     res.send(slicedArray);
     } catch (error) {
     res.status(400).json({msg:err});
     }
     }
   );
+
+  //sort function
+  function sort_by_key(result, sortField,sortOrder)  
+  {
+    console.log("Check");
+  return result.sort(function(a, b)
+  { 
+    var x = a[sortField]; var y = b[sortField];
+    if(sortOrder =="-1"){
+      console.log("if");
+      return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    }
+    else{
+      console.log("else");
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    }
+  });
+  }
 
   //get all notification list
   app.get("/getAllNotificationsList", async (req, res) => {
