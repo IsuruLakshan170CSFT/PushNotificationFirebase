@@ -54,12 +54,12 @@ app.use(express.json());
     let numberOfRows= parseInt(req.query.rows);
     let currentItemCount =parseInt(req.query.first);
     let finalLength=currentItemCount+numberOfRows;
-    let filter =req.query.filters;
-    console.log(filter);
-    // let list =filter[title];
-    // console.log("list : "+list);
-    // let list1 =filter["title"];
-    // console.log("list1 : "+list1);
+  
+
+
+
+    
+     console.log("filter field : "+req.query.filterTitle);
 
     let sortField= req.query.sortField;
     let sortOrder= req.query.sortOrder;
@@ -67,18 +67,39 @@ app.use(express.json());
     try {     
     const functionName="getAllNotifications";
     const result = await run(functionName,req,res);
-    if(sortField =="undefined"){
-      arry = sort_by_key(result, 'time','-1');
+   var filteredArry =[];
+    var data=req.query.filterTitle;
+    
+    result.filter(
+      t=>
+      { var dataLength=data.length;
+       var newName=t.body;
+        var strFirstThree = newName?.substring(0,dataLength);
+        data=data.toLowerCase();
+       strFirstThree=strFirstThree?.toLocaleLowerCase();
+       if(strFirstThree == data){
+        console.log("true");
+        filteredArry.push(t);
+      //  return true;
+       }
+       else{
+        console.log("false");
+       // return false;
+       }
     }
-    else{
-       arry = sort_by_key(result, sortField,sortOrder);
+      
+      );
+      console.log("result length : "+filteredArry.length);
 
-    }
+
+   arry = sort_by_key(filteredArry, sortField,sortOrder);
+
+    
     const slicedArray = arry.slice(currentItemCount,finalLength);
     if(!result)throw Error("Some thing worng");
     res.send(slicedArray);
     } catch (error) {
-    res.status(400).json({msg:err});
+    res.status(400).json({msg:error});
     }
     }
   );
@@ -86,19 +107,37 @@ app.use(express.json());
   //sort function
   function sort_by_key(result, sortField,sortOrder)  
   {
-    console.log("Check");
-  return result.sort(function(a, b)
-  { 
-    var x = a[sortField]; var y = b[sortField];
-    if(sortOrder =="-1"){
-      console.log("if");
-      return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    if(sortField =='time'){
+
+      return result.sort(function(a, b)
+      {   if(sortOrder =="-1"){
+              var date1=new Date(a.time);
+              var date2=new Date(b.time);
+              return date2 - date1;
+           }
+          else {
+            var date1=new Date(a.time);
+            var date2=new Date(b.time);
+            return date1 - date2;
+         }
+
+        });
     }
     else{
-      console.log("else");
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      return result.sort(function(a, b)
+      { 
+        var x = a[sortField]; var y = b[sortField];
+        if(sortOrder =="-1"){
+          
+          return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+        }
+        else{
+        
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        }
+      });
     }
-  });
+       
   }
 
   //get all notification list
