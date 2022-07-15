@@ -19,19 +19,136 @@ app.use(express.json());
     let currentItemCount =parseInt(req.query.first);
     let finalLength=currentItemCount+numberOfRows;
 
+     
+    let sortField= req.query.sortField;
+    let sortOrder= req.query.sortOrder;
+    var arry =[];
+
     try {     
     const functionName="getAllUsers";
+
     const result = await run(functionName,req,res);
-    const slicedArray = result.slice(currentItemCount,finalLength);
+    var filteredArry =[];
+    var filterUser=req.query.filterUser;
+    var filterDevice=req.query.filterDevice;
+
+    if(filterUser == "" && filterDevice == "" ){
+      filteredArry =result;
+    }
+    else{
+      console.log("else ");
+      filteredArry =result;
+      if(filterUser != ""){ filteredArry =filteFiledDevices(filteredArry,filterUser,"user"); }
+      if(filterDevice != ""){ filteredArry =filteFiledDevices(filteredArry,filterDevice,"deviceName"); }
+    }
+
+    arry = sortDevices(filteredArry, sortField,sortOrder);
+
+    const slicedArray = arry.slice(currentItemCount,finalLength);
 
     if(!result)throw Error("Some thing worng");
    // console.log(result);
     res.send(slicedArray);
     } catch (error) {
-    res.status(400).json({msg:err});
+    res.status(400).json({msg:error});
     }
     }
   );
+
+   //filter devices function
+   function filteFiledDevices(result,data,filterBy){
+    
+    var filteredArry =[];
+    result.filter(
+      t=>
+      { var dataLength=data.length;
+       var newName="";
+       if(filterBy == "user") {
+        
+            newName=t.user;
+
+            var strFirstThree = newName?.substring(0,dataLength);
+            data=data.toLowerCase();
+          strFirstThree=strFirstThree?.toLocaleLowerCase();
+
+          if(strFirstThree == data){
+           
+            filteredArry.push(t);
+          
+          }
+          else{
+         
+          // return false;
+          }
+      
+      }
+       if(filterBy == "deviceName") {
+       for(let i=0;i<t.device.length;i++){
+        
+            newName=t.device[i].deviceName;
+
+  
+        
+            var strFirstThree = newName?.substring(0,dataLength);
+            data=data.toLowerCase();
+          strFirstThree=strFirstThree?.toLocaleLowerCase();
+
+          if(strFirstThree == data){
+            console.log("true");
+            filteredArry.push(t);
+            break;
+          
+          }
+          else{
+          
+          // return false;
+          }
+       }
+      }
+
+       
+    }
+      
+      );
+
+      return filteredArry;
+
+  }  
+//sort devices function
+function sortDevices(result, sortField,sortOrder)  
+{
+    return result.sort(function(a, b)
+    {  
+      
+      if(sortField =='user'){
+        var x = a[sortField]; var y = b[sortField];
+        if(sortOrder =="-1"){
+          
+          return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+        }
+        else{
+        
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        }
+      }else if(sortField =="deviceName"){
+        var x = a.device[0][sortField]; var y = b.device[0][sortField];
+        if(sortOrder =="-1"){
+          
+          return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+        }
+        else{
+        
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        }
+      }
+   
+    });
+  }
+     
+
+
+
+
     //get all  users array length
     app.get("/getAllUsersLength", async (req, res) => {
 
@@ -55,25 +172,57 @@ app.use(express.json());
     let currentItemCount =parseInt(req.query.first);
     let finalLength=currentItemCount+numberOfRows;
   
-
-
-
-    
-     console.log("filter field : "+req.query.filterTitle);
-
     let sortField= req.query.sortField;
     let sortOrder= req.query.sortOrder;
     var arry =[];
     try {     
     const functionName="getAllNotifications";
+
     const result = await run(functionName,req,res);
-   var filteredArry =[];
-    var data=req.query.filterTitle;
     
+    var filteredArry =[];
+    var filterTitle=req.query.filterTitle;
+    var filterBody=req.query.filterBody;
+    var filterSendBy=req.query.filterSendBy;
+    var filterSendFor=req.query.filterSendFor;
+    var filterTime=req.query.filterTime;
+
+    if(filterTitle == "" && filterBody == "" && filterSendBy == "" && filterSendFor == "" && filterTime == ""){
+      filteredArry =result;
+    }
+    else{
+      filteredArry =result;
+      if(filterTitle != ""){ filteredArry =filteFiled(filteredArry,filterTitle,"title"); }
+      if(filterBody != ""){ filteredArry =filteFiled(filteredArry,filterBody,"body"); }
+      if(filterSendBy != ""){ filteredArry =filteFiled(filteredArry,filterSendBy,"sendBy"); }
+      if(filterSendFor != ""){ filteredArry =filteFiled(filteredArry,filterSendFor,"sendFor"); }
+      if(filterTime != ""){ filteredArry =filteFiled(filteredArry,filterTime,"time"); }
+  
+    }
+
+    arry = sort_by_key(filteredArry, sortField,sortOrder);
+    const slicedArray = arry.slice(currentItemCount,finalLength);
+    if(!result)throw Error("Some thing worng");
+    res.send(slicedArray);
+    } catch (error) {
+    res.status(400).json({msg:error});
+    }
+    }
+  );
+
+  //filter function
+  function filteFiled(result,data,filterBy){
+    var filteredArry =[];
     result.filter(
       t=>
       { var dataLength=data.length;
-       var newName=t.body;
+       var newName="";
+       if(filterBy == "title") {newName=t.title}
+       if(filterBy == "body") {newName=t.body}
+       if(filterBy == "sendBy") {newName=t.sendBy}
+       if(filterBy == "sendFor") {newName=t.sendFor}
+       if(filterBy == "time") {newName=t.time}
+
         var strFirstThree = newName?.substring(0,dataLength);
         data=data.toLowerCase();
        strFirstThree=strFirstThree?.toLocaleLowerCase();
@@ -89,20 +238,10 @@ app.use(express.json());
     }
       
       );
-      console.log("result length : "+filteredArry.length);
 
+      return filteredArry;
 
-   arry = sort_by_key(filteredArry, sortField,sortOrder);
-
-    
-    const slicedArray = arry.slice(currentItemCount,finalLength);
-    if(!result)throw Error("Some thing worng");
-    res.send(slicedArray);
-    } catch (error) {
-    res.status(400).json({msg:error});
-    }
-    }
-  );
+  }  
 
   //sort function
   function sort_by_key(result, sortField,sortOrder)  
