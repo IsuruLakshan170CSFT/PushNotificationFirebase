@@ -222,19 +222,32 @@ function sortDevices(result, sortField,sortOrder)
        if(filterBy == "sendBy") {newName=t.sendBy}
        if(filterBy == "sendFor") {newName=t.sendFor}
        if(filterBy == "time") {newName=t.time}
+       var strFirstThree ="";
 
-        var strFirstThree = newName?.substring(0,dataLength);
-        data=data.toLowerCase();
-       strFirstThree=strFirstThree?.toLocaleLowerCase();
-       if(strFirstThree == data){
-        console.log("true");
-        filteredArry.push(t);
-      //  return true;
+       if(filterBy =="sendFor"){
+        for(let i=0;i<newName.length;i++){
+          console.log("length");
+          console.log(newName[i]);
+          strFirstThree = newName[i]?.substring(0,dataLength);
+          data=data.toLowerCase();
+          strFirstThree=strFirstThree?.toLocaleLowerCase();
+          if(strFirstThree == data){
+           filteredArry.push(t);
+           break ;
+          }
+        }
+       
        }
        else{
-        console.log("false");
-       // return false;
+         strFirstThree = newName?.substring(0,dataLength);
+         data=data.toLowerCase();
+         strFirstThree=strFirstThree?.toLocaleLowerCase();
+         if(strFirstThree == data){
+          filteredArry.push(t);
+         }
        }
+    
+      
     }
       
       );
