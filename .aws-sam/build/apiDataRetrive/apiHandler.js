@@ -5,7 +5,8 @@ import express from 'express';
 import cors from 'cors';
 import http from 'https';
 import {authHeader,dbName,userCollection,notificationCollection } from './config.js';
-import { run} from './dbConnect.js'
+import { run} from './dbConnect.js' ;
+import dateFormat, { masks } from "dateformat";
 const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -204,6 +205,27 @@ function sortDevices(result, sortField,sortOrder)
         res.status(400).json({msg:"error"});
       }
     })
+
+
+ // getAllUsers query
+ app.get("/getAllUsersQuery", async (req, res) => {
+
+  try{
+    const functionName="getAllUsersQuery";
+    const result = await run(functionName,req,res);
+    if(result !="error"){
+      res.send(result);
+    }
+    else{
+      res.status(400).json({msg:"error"});
+    }
+
+  }
+  catch(error){
+    res.status(400).json({msg:"error"});
+  }
+})
+
   //get all notification api
   app.get("/getAllNotifications", async (req, res) => {
     
@@ -364,15 +386,19 @@ app.post("/addNotification", async (req, res) => {
   try {     
     var result="";
     const functionName="addNotification";
-    const notificationResult = await sendNotification(req)
-    if(notificationResult == "True" && req.body.isSave == true){
-     const saveResult = await run(functionName,req,res);
-     result=saveResult;
-    }
-    else{
-      result =notificationResult;
-    }
+    // const notificationResult = await sendNotification(req)
+    // if(notificationResult == "True" && req.body.isSave == true){
+    //  const saveResult = await run(functionName,req,res);
+    //  result=saveResult;
+    // }
+    // else{
+    //   result =notificationResult;
+    // }
 
+
+
+    const saveResult = await run(functionName,req,res);
+    result=saveResult;
     if(!result)throw Error("Some thing worng");
     console.log(result);
     res.status(200).json({message:"success : "});
@@ -475,8 +501,17 @@ app.post("/deleteUser", async (req, res) => {
     //post notification
     async function addNotification(clients,req,res) {
     
-      const today = new Date();
-      const currentDateTime = today.toGMTString();  
+    //  var currentDateTime = new Date();
+    //  console.log(currentDateTime);
+     // currentDateTime =currentDateTime.toString();
+ 
+     // const currentDateTime = today.toGMTString();  
+
+     var currentDateTime = new Date();
+     currentDateTime = dateFormat(currentDateTime, "isoDateTime");
+      console.log(currentDateTime);
+      console.log(currentDateTime.toString());
+     // 2007-06-09T17:46:21
 
       const data ={
         title: req.body.title,
@@ -715,6 +750,7 @@ async function deleteUser(client,req,res) {
 
    //get all notifications query
   async function getAllNotificationsQuery(clients,req,res) {
+
     let numberOfRows= parseInt(req.query.rows);
     let currentItemCount =parseInt(req.query.first);
     let sortField= req.query.sortField;
@@ -824,40 +860,55 @@ async function deleteUser(client,req,res) {
 
    //get all users query
    async function getAllUsersQuery(clients,req,res) {
+
     let numberOfRows= parseInt(req.query.rows);
     let currentItemCount =parseInt(req.query.first);
     let sortField= req.query.sortField;
     let sortOrder= req.query.sortOrder;
+    let filterUser= req.query.filterUser;
+    let filterDeviceName= req.query.filterDeviceName;
     console.log(numberOfRows);
     console.log(currentItemCount);
     console.log(sortField);
-  
+    console.log(sortOrder);
+    console.log(filterUser);
+    console.log(filterDeviceName);
    try{
    
     var result =[];
-    if(sortField == "user"){
-      result = await clients.db(dbName).collection(userCollection).find({}).sort({ user:sortOrder}).skip(currentItemCount).limit(numberOfRows).toArray();
-    }
-   else if(sortField == "deviceName"){
-      result = await clients.db(dbName).collection(userCollection).find({}).sort({ device:sortOrder}).skip(currentItemCount).limit(numberOfRows).toArray();
-    }
-  
 
-   // result = await clients.db(dbName).collection(notificationCollection).find({}).sort({ title:sortOrder}).skip(currentItemCount).limit(numberOfRows).toArray();
-  //  const result = await clients.db(dbName).collection(notificationCollection).find({} ).sort({title:1}).limit(2).toArray();
-   //  const result = await clients.db(dbName).collection(notificationCollection).find({} ,{sendFor: {$slice:[0,2]}} ).sort({title:1}).toArray();
-    //  const result = await clients.db(dbName).collection(notificationCollection).find({}).sort({title:1}).toArray();
-  
- 
-    //  result =result.slice(2,5);
+    if(sortField == "user"){
+      console.log("User");
+
+      result = await clients.db(dbName).collection(userCollection)
+      .find(
+        {"user":{$regex : filterUser ,$options:"i"},
+         "_id":{$regex : filterUser ,$options:"i"}
+        
+      })
+      .sort({user: sortOrder})
+      .skip(currentItemCount)
+      .limit(numberOfRows)
+      .toArray();
+
+    }
+    else if(sortField == "deviceName"){
+      result = await clients.db(dbName).collection(userCollection)
+      .find(
+        {user:{$regex : filterUser ,$options:"i"}
+      })
+      .sort({device: sortOrder})
+      .skip(currentItemCount)
+      .limit(numberOfRows)
+      .toArray();
+    }
+
       
     return result;
-      
-          
-      
-   }catch(error){
-   
-    return "error";
+ 
+   }
+   catch(error){
+    res.status(400).json({msg:error});
    }
   }
 
