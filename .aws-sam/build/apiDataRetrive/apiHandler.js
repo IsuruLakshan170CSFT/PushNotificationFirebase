@@ -859,7 +859,7 @@ async function deleteUser(client,req,res) {
   }
 
    //get all users query
-   async function getAllUsersQuery(clients,req,res) {
+async function getAllUsersQuery(clients,req,res) {
 
     let numberOfRows= parseInt(req.query.rows);
     let currentItemCount =parseInt(req.query.first);
@@ -867,23 +867,19 @@ async function deleteUser(client,req,res) {
     let sortOrder= req.query.sortOrder;
     let filterUser= req.query.filterUser;
     let filterDeviceName= req.query.filterDeviceName;
-    console.log(numberOfRows);
-    console.log(currentItemCount);
-    console.log(sortField);
-    console.log(sortOrder);
-    console.log(filterUser);
-    console.log(filterDeviceName);
+
    try{
    
     var result =[];
 
     if(sortField == "user"){
       console.log("User");
+      console.log(filterDeviceName);
 
       result = await clients.db(dbName).collection(userCollection)
       .find(
         {"user":{$regex : filterUser ,$options:"i"},
-         "_id":{$regex : filterUser ,$options:"i"}
+         "device.deviceName":{$regex : filterDeviceName ,$options:"i"}
         
       })
       .sort({user: sortOrder})
@@ -895,9 +891,10 @@ async function deleteUser(client,req,res) {
     else if(sortField == "deviceName"){
       result = await clients.db(dbName).collection(userCollection)
       .find(
-        {user:{$regex : filterUser ,$options:"i"}
+        {user:{$regex : filterUser ,$options:"i"},
+        "device.deviceName":{$regex : filterDeviceName ,$options:"i"}
       })
-      .sort({device: sortOrder})
+      .sort({"device.deviceName": sortOrder})
       .skip(currentItemCount)
       .limit(numberOfRows)
       .toArray();
