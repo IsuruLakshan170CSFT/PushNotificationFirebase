@@ -11,6 +11,26 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+app.get("/getAllUsersQuery", async (req, res) => {
+
+  try{
+    const functionName="getAllUsersQuery";
+    const result = await run(functionName,req,res);
+    if(result !="error"){
+      res.send(result);
+    }
+    else{
+      res.status(400).json({msg:"error"});
+    }
+
+  }
+  catch(error){
+    res.status(400).json({msg:"error"});
+  }
+
+
+})
   //get all  users api
   app.get("/getAllUsers", async (req, res) => {
 
@@ -147,8 +167,6 @@ function sortDevices(result, sortField,sortOrder)
      
 
 
-
-
     //get all  users array length
     app.get("/getAllUsersLength", async (req, res) => {
 
@@ -165,6 +183,27 @@ function sortDevices(result, sortField,sortOrder)
       }
     );
 
+
+    //query
+
+    // getAllNotificationsQuery query
+    app.get("/getAllNotificationsQuery", async (req, res) => {
+
+      try{
+        const functionName="getAllNotificationsQuery";
+        const result = await run(functionName,req,res);
+        if(result !="error"){
+          res.send(result);
+        }
+        else{
+          res.status(400).json({msg:"error"});
+        }
+
+      }
+      catch(error){
+        res.status(400).json({msg:"error"});
+      }
+    })
   //get all notification api
   app.get("/getAllNotifications", async (req, res) => {
     
@@ -396,6 +435,16 @@ app.post("/deleteUser", async (req, res) => {
       const result=await deleteUser(client,req,res);
       return  result;
     }
+
+    else if(functionName == "getAllNotificationsQuery"){
+      const result=await getAllNotificationsQuery(client,req,res);
+      return  result;
+    }
+    else if(functionName == "getAllUsersQuery"){
+      const result=await getAllUsersQuery(client,req,res);
+      return  result;
+    }
+    
   }
 
   //get all notifications
@@ -661,6 +710,156 @@ async function deleteUser(client,req,res) {
     req.end();
  });
  }
+
+ //query 
+
+   //get all notifications query
+  async function getAllNotificationsQuery(clients,req,res) {
+    let numberOfRows= parseInt(req.query.rows);
+    let currentItemCount =parseInt(req.query.first);
+    let sortField= req.query.sortField;
+    let sortOrder= req.query.sortOrder;
+    let filterTitle= req.query.filterTitle;
+    let filterBody= req.query.filterBody;
+    let filterSendBy= req.query.filterSendBy;
+    let filterSendFor= req.query.filterSendFor;
+    let filterTime= req.query.filterTime;
+
+    console.log(filterTitle);
+
+  
+   try{
+   
+  var result =[];
+
+    if(sortField == "title"){
+
+      result = await clients.db(dbName).collection(notificationCollection)
+      .find(
+        {title:{$regex : filterTitle ,$options:"i"},
+        body:{$regex : filterBody ,$options:"i"},
+        sendBy:{$regex : filterSendBy ,$options:"i"},
+        sendFor:{$regex : filterSendFor ,$options:"i"},
+        time:{$regex : filterTime ,$options:"i"}
+      })
+      .sort({title: sortOrder})
+      .skip(currentItemCount)
+      .limit(numberOfRows)
+      .toArray();
+
+    }
+   else if(sortField == "body"){
+    result = await clients.db(dbName).collection(notificationCollection)
+    .find(
+      {title:{$regex : filterTitle ,$options:"i"},
+      body:{$regex : filterBody ,$options:"i"},
+      sendBy:{$regex : filterSendBy ,$options:"i"},
+      sendFor:{$regex : filterSendFor ,$options:"i"},
+      time:{$regex : filterTime ,$options:"i"}
+    })
+    .sort({body: sortOrder})
+    .skip(currentItemCount)
+    .limit(numberOfRows)
+    .toArray();
+
+    }
+    else  if(sortField == "sendBy"){
+      result = await clients.db(dbName).collection(notificationCollection)
+      .find(
+        {title:{$regex : filterTitle ,$options:"i"},
+        body:{$regex : filterBody ,$options:"i"},
+        sendBy:{$regex : filterSendBy ,$options:"i"},
+        sendFor:{$regex : filterSendFor ,$options:"i"},
+        time:{$regex : filterTime ,$options:"i"}
+      })
+      .sort({sendBy: sortOrder})
+      .skip(currentItemCount)
+      .limit(numberOfRows)
+      .toArray();
+
+    }
+    else if(sortField == "sendFor"){
+      result = await clients.db(dbName).collection(notificationCollection)
+      .find(
+        {title:{$regex : filterTitle ,$options:"i"},
+        body:{$regex : filterBody ,$options:"i"},
+        sendBy:{$regex : filterSendBy ,$options:"i"},
+        sendFor:{$regex : filterSendFor ,$options:"i"},
+        time:{$regex : filterTime ,$options:"i"}
+      })
+      .sort({sendFor: sortOrder})
+      .skip(currentItemCount)
+      .limit(numberOfRows)
+      .toArray();
+
+    }
+    else if(sortField == "time"){
+      result = await clients.db(dbName).collection(notificationCollection)
+      .find(
+        {title:{$regex : filterTitle ,$options:"i"},
+        body:{$regex : filterBody ,$options:"i"},
+        sendBy:{$regex : filterSendBy ,$options:"i"},
+        sendFor:{$regex : filterSendFor ,$options:"i"},
+        time:{$regex : filterTime ,$options:"i"}
+      })
+      .sort({time: sortOrder})
+      .skip(currentItemCount)
+      .limit(numberOfRows)
+      .toArray();
+
+    }
+
+    console.log(result.length);
+    return result;
+    
+    }
+      
+          
+  catch(error)
+  {
+    res.status(400).json({msg:"err"});
+  } 
+
+  }
+
+   //get all users query
+   async function getAllUsersQuery(clients,req,res) {
+    let numberOfRows= parseInt(req.query.rows);
+    let currentItemCount =parseInt(req.query.first);
+    let sortField= req.query.sortField;
+    let sortOrder= req.query.sortOrder;
+    console.log(numberOfRows);
+    console.log(currentItemCount);
+    console.log(sortField);
+  
+   try{
+   
+    var result =[];
+    if(sortField == "user"){
+      result = await clients.db(dbName).collection(userCollection).find({}).sort({ user:sortOrder}).skip(currentItemCount).limit(numberOfRows).toArray();
+    }
+   else if(sortField == "deviceName"){
+      result = await clients.db(dbName).collection(userCollection).find({}).sort({ device:sortOrder}).skip(currentItemCount).limit(numberOfRows).toArray();
+    }
+  
+
+   // result = await clients.db(dbName).collection(notificationCollection).find({}).sort({ title:sortOrder}).skip(currentItemCount).limit(numberOfRows).toArray();
+  //  const result = await clients.db(dbName).collection(notificationCollection).find({} ).sort({title:1}).limit(2).toArray();
+   //  const result = await clients.db(dbName).collection(notificationCollection).find({} ,{sendFor: {$slice:[0,2]}} ).sort({title:1}).toArray();
+    //  const result = await clients.db(dbName).collection(notificationCollection).find({}).sort({title:1}).toArray();
+  
+ 
+    //  result =result.slice(2,5);
+      
+    return result;
+      
+          
+      
+   }catch(error){
+   
+    return "error";
+   }
+  }
 
 
 export const apiData = serverless(app); 
