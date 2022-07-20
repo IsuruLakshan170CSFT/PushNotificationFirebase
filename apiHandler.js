@@ -12,168 +12,12 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-app.get("/getAllUsersQuery", async (req, res) => {
-
-  try{
-    const functionName="getAllUsersQuery";
-    const result = await run(functionName,req,res);
-    if(result !="error"){
-      res.send(result);
-    }
-    else{
-      res.status(400).json({msg:"error"});
-    }
-
-  }
-  catch(error){
-    res.status(400).json({msg:"error"});
-  }
-
-
-})
-  //get all  users api
-  app.get("/getAllUsers", async (req, res) => {
-
-    
-    let numberOfRows= parseInt(req.query.rows);
-    let currentItemCount =parseInt(req.query.first);
-    let finalLength=currentItemCount+numberOfRows;
-
-     
-    let sortField= req.query.sortField;
-    let sortOrder= req.query.sortOrder;
-    var arry =[];
-
-    try {     
-    const functionName="getAllUsers";
-
-    const result = await run(functionName,req,res);
-    var filteredArry =[];
-    var filterUser=req.query.filterUser;
-    var filterDevice=req.query.filterDevice;
-
-    if(filterUser == "" && filterDevice == "" ){
-      filteredArry =result;
-    }
-    else{
-      console.log("else ");
-      filteredArry =result;
-      if(filterUser != ""){ filteredArry =filteFiledDevices(filteredArry,filterUser,"user"); }
-      if(filterDevice != ""){ filteredArry =filteFiledDevices(filteredArry,filterDevice,"deviceName"); }
-    }
-
-    arry = sortDevices(filteredArry, sortField,sortOrder);
-
-    const slicedArray = arry.slice(currentItemCount,finalLength);
-
-    if(!result)throw Error("Some thing worng");
-   // console.log(result);
-    res.send(slicedArray);
-    } catch (error) {
-    res.status(400).json({msg:error});
-    }
-    }
-  );
-
-   //filter devices function
-   function filteFiledDevices(result,data,filterBy){
-    
-    var filteredArry =[];
-    result.filter(
-      t=>
-      { var dataLength=data.length;
-       var newName="";
-       if(filterBy == "user") {
-        
-            newName=t.user;
-
-            var strFirstThree = newName?.substring(0,dataLength);
-            data=data.toLowerCase();
-          strFirstThree=strFirstThree?.toLocaleLowerCase();
-
-          if(strFirstThree == data){
-           
-            filteredArry.push(t);
-          
-          }
-          else{
-         
-          // return false;
-          }
-      
-      }
-       if(filterBy == "deviceName") {
-       for(let i=0;i<t.device.length;i++){
-        
-            newName=t.device[i].deviceName;
-
-  
-        
-            var strFirstThree = newName?.substring(0,dataLength);
-            data=data.toLowerCase();
-          strFirstThree=strFirstThree?.toLocaleLowerCase();
-
-          if(strFirstThree == data){
-            console.log("true");
-            filteredArry.push(t);
-            break;
-          
-          }
-          else{
-          
-          // return false;
-          }
-       }
-      }
-
-       
-    }
-      
-      );
-
-      return filteredArry;
-
-  }  
-//sort devices function
-function sortDevices(result, sortField,sortOrder)  
-{
-    return result.sort(function(a, b)
-    {  
-      
-      if(sortField =='user'){
-        var x = a[sortField]; var y = b[sortField];
-        if(sortOrder =="-1"){
-          
-          return ((x < y) ? 1 : ((x > y) ? -1 : 0));
-        }
-        else{
-        
-          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-        }
-      }else if(sortField =="deviceName"){
-        var x = a.device[0][sortField]; var y = b.device[0][sortField];
-        if(sortOrder =="-1"){
-          
-          return ((x < y) ? 1 : ((x > y) ? -1 : 0));
-        }
-        else{
-        
-          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-        }
-      }
-   
-    });
-  }
-     
-
-
     //get all  users array length
     app.get("/getAllUsersLength", async (req, res) => {
 
   
       try {     
-      const functionName="getAllUsers";
+      const functionName="getAllUsersLength";
       const result = await run(functionName,req,res);
       if(!result)throw Error("Some thing worng");
       const resultLength=result.length;
@@ -183,9 +27,6 @@ function sortDevices(result, sortField,sortOrder)
       }
       }
     );
-
-
-    //query
 
     // getAllNotificationsQuery query
     app.get("/getAllNotificationsQuery", async (req, res) => {
@@ -206,7 +47,6 @@ function sortDevices(result, sortField,sortOrder)
       }
     })
 
-
  // getAllUsers query
  app.get("/getAllUsersQuery", async (req, res) => {
 
@@ -225,133 +65,6 @@ function sortDevices(result, sortField,sortOrder)
     res.status(400).json({msg:"error"});
   }
 })
-
-  //get all notification api
-  app.get("/getAllNotifications", async (req, res) => {
-    
-    let numberOfRows= parseInt(req.query.rows);
-    let currentItemCount =parseInt(req.query.first);
-    let finalLength=currentItemCount+numberOfRows;
-  
-    let sortField= req.query.sortField;
-    let sortOrder= req.query.sortOrder;
-    var arry =[];
-    try {     
-    const functionName="getAllNotifications";
-
-    const result = await run(functionName,req,res);
-    
-    var filteredArry =[];
-    var filterTitle=req.query.filterTitle;
-    var filterBody=req.query.filterBody;
-    var filterSendBy=req.query.filterSendBy;
-    var filterSendFor=req.query.filterSendFor;
-    var filterTime=req.query.filterTime;
-
-    if(filterTitle == "" && filterBody == "" && filterSendBy == "" && filterSendFor == "" && filterTime == ""){
-      filteredArry =result;
-    }
-    else{
-      filteredArry =result;
-      if(filterTitle != ""){ filteredArry =filteFiled(filteredArry,filterTitle,"title"); }
-      if(filterBody != ""){ filteredArry =filteFiled(filteredArry,filterBody,"body"); }
-      if(filterSendBy != ""){ filteredArry =filteFiled(filteredArry,filterSendBy,"sendBy"); }
-      if(filterSendFor != ""){ filteredArry =filteFiled(filteredArry,filterSendFor,"sendFor"); }
-      if(filterTime != ""){ filteredArry =filteFiled(filteredArry,filterTime,"time"); }
-  
-    }
-
-    arry = sort_by_key(filteredArry, sortField,sortOrder);
-    const slicedArray = arry.slice(currentItemCount,finalLength);
-    if(!result)throw Error("Some thing worng");
-    res.send(slicedArray);
-    } catch (error) {
-    res.status(400).json({msg:error});
-    }
-    }
-  );
-
-  //filter function
-  function filteFiled(result,data,filterBy){
-    var filteredArry =[];
-    result.filter(
-      t=>
-      { var dataLength=data.length;
-       var newName="";
-       if(filterBy == "title") {newName=t.title}
-       if(filterBy == "body") {newName=t.body}
-       if(filterBy == "sendBy") {newName=t.sendBy}
-       if(filterBy == "sendFor") {newName=t.sendFor}
-       if(filterBy == "time") {newName=t.time}
-       var strFirstThree ="";
-
-       if(filterBy =="sendFor"){
-        for(let i=0;i<newName.length;i++){
-          console.log("length");
-          console.log(newName[i]);
-          strFirstThree = newName[i]?.substring(0,dataLength);
-          data=data.toLowerCase();
-          strFirstThree=strFirstThree?.toLocaleLowerCase();
-          if(strFirstThree == data){
-           filteredArry.push(t);
-           break ;
-          }
-        }
-       
-       }
-       else{
-         strFirstThree = newName?.substring(0,dataLength);
-         data=data.toLowerCase();
-         strFirstThree=strFirstThree?.toLocaleLowerCase();
-         if(strFirstThree == data){
-          filteredArry.push(t);
-         }
-       }
-    
-      
-    }
-      
-      );
-
-      return filteredArry;
-
-  }  
-
-  //sort function
-  function sort_by_key(result, sortField,sortOrder)  
-  {
-    if(sortField =='time'){
-
-      return result.sort(function(a, b)
-      {   if(sortOrder =="-1"){
-              var date1=new Date(a.time);
-              var date2=new Date(b.time);
-              return date2 - date1;
-           }
-          else {
-            var date1=new Date(a.time);
-            var date2=new Date(b.time);
-            return date1 - date2;
-         }
-
-        });
-    }
-    else{
-      return result.sort(function(a, b)
-      { 
-        var x = a[sortField]; var y = b[sortField];
-        if(sortOrder =="-1"){
-          
-          return ((x < y) ? 1 : ((x > y) ? -1 : 0));
-        }
-        else{
-        
-          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-        }
-      });
-    }
-       
-  }
 
   //get all notification list
   app.get("/getAllNotificationsList", async (req, res) => {
@@ -386,19 +99,15 @@ app.post("/addNotification", async (req, res) => {
   try {     
     var result="";
     const functionName="addNotification";
-    // const notificationResult = await sendNotification(req)
-    // if(notificationResult == "True" && req.body.isSave == true){
-    //  const saveResult = await run(functionName,req,res);
-    //  result=saveResult;
-    // }
-    // else{
-    //   result =notificationResult;
-    // }
+    const notificationResult = await sendNotification(req)
+    if(notificationResult == "True" && req.body.isSave == true){
+     const saveResult = await run(functionName,req,res);
+     result=saveResult;
+    }
+    else{
+      result =notificationResult;
+    }
 
-
-
-    const saveResult = await run(functionName,req,res);
-    result=saveResult;
     if(!result)throw Error("Some thing worng");
     console.log(result);
     res.status(200).json({message:"success : "});
@@ -444,8 +153,8 @@ app.post("/deleteUser", async (req, res) => {
       const result=await getAllNotifications(client,req,res);
       return  result;
     }
-    else if(functionName == "getAllUsers"){
-      const result=await getAllUsers(client,req,res);
+    else if(functionName == "getAllUsersLength"){
+      const result=await getAllUsersLength(client,req,res);
       return  result;
     }
     else if(functionName == "addNotification"){
@@ -487,7 +196,7 @@ app.post("/deleteUser", async (req, res) => {
   }
 
   //get all users
-  async function getAllUsers(clients,req,res) {
+  async function getAllUsersLength(clients,req,res) {
   
     const result = await clients.db(dbName).collection(userCollection).find({}).toArray();
     if (result) {
@@ -499,20 +208,11 @@ app.post("/deleteUser", async (req, res) => {
   }
  
     //post notification
-    async function addNotification(clients,req,res) {
+  async function addNotification(clients,req,res) {
     
-    //  var currentDateTime = new Date();
-    //  console.log(currentDateTime);
-     // currentDateTime =currentDateTime.toString();
- 
-     // const currentDateTime = today.toGMTString();  
-
      var currentDateTime = new Date();
      currentDateTime = dateFormat(currentDateTime, "isoDateTime");
-      console.log(currentDateTime);
-      console.log(currentDateTime.toString());
-     // 2007-06-09T17:46:21
-
+    
       const data ={
         title: req.body.title,
         body: req.body.body,
@@ -535,16 +235,16 @@ app.post("/deleteUser", async (req, res) => {
  async function addUser(client,req,res) {
       const data ={
         user: req.body.user,
-        device:[
-          { deviceId:req.body.device[0].deviceId, 
-            deviceName:req.body.device[0].deviceName,
-            deviceToken: req.body.device[0].deviceToken}
+        devices:[
+          { deviceId:req.body.devices[0].deviceId, 
+            deviceName:req.body.devices[0].deviceName,
+            deviceToken: req.body.devices[0].deviceToken}
         ],
        }
       
   
        try {
-        const deviceData =data.device;
+        const deviceData =data.devices;
         const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
         //add new user
         if(findUser == null){
@@ -555,26 +255,26 @@ app.post("/deleteUser", async (req, res) => {
         //update exising user
         else{
           //update existing User 
-          //check device is existing or not
-          const query = { user: data.user, "device.deviceId": deviceData[0].deviceId };
+          //check devices is existing or not
+          const query = { user: data.user, "devices.deviceId": deviceData[0].deviceId };
           const findUserDevice = await client.db(dbName).collection(userCollection).findOne(query);
       //    console.log(findUserDevice);
           if(findUserDevice){
-            //update existing device token
+            //update existing devices token
             const updateDocument = {
-              $set: { "device.$.deviceToken": deviceData[0].deviceToken }
+              $set: { "devices.$.deviceToken": deviceData[0].deviceToken }
             };
             const result = await client.db(dbName).collection(userCollection).updateOne(query, updateDocument);
-            console.log("updated existing device in existing user");
-            return "updated existing device in existing user";
+            console.log("updated existing devices in existing user");
+            return "updated existing devices in existing user";
           }
           else{
     
-         //add new device to exitsting user
+         //add new devices to exitsting user
          try { 
          // console.log(req.body.user);
         
-          const allExistingDevices =findUser.device;
+          const allExistingDevices =findUser.devices;
           const deviceCount =Object.keys(allExistingDevices).length;
         
           const newConvertedDevices = new Array ;
@@ -604,7 +304,7 @@ app.post("/deleteUser", async (req, res) => {
               allDevString = allDevString + "," + tempSting;
             } 
           }
-            const newDevicescreate =  "{ " + ' "device" ' +": [ "+ allDevString + "] }" ;
+            const newDevicescreate =  "{ " + ' "devices" ' +": [ "+ allDevString + "] }" ;
         const obj = JSON.parse(newDevicescreate);
       //  console.log( obj);
     //  const result = await client.db(dbName).collection("users").updateOne(query, obj);
@@ -631,14 +331,14 @@ app.post("/deleteUser", async (req, res) => {
 async function deleteUser(client,req,res) {
   const data ={
     user: req.body.user,
-    device:[
-      { deviceId:req.body.device[0].deviceId, 
-        deviceName:req.body.device[0].deviceName,
-        deviceToken: req.body.device[0].deviceToken}
+    devices:[
+      { deviceId:req.body.devices[0].deviceId, 
+        deviceName:req.body.devices[0].deviceName,
+        deviceToken: req.body.devices[0].deviceToken}
     ],
    }
   try {
-    const deviceData =data.device;
+    const deviceData =data.devices;
     const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
     //user is not in database
     if(findUser == null){
@@ -648,21 +348,21 @@ async function deleteUser(client,req,res) {
     //if user exist in database
     else{
       //update existing User 
-      //check device is existing or not
-      const query = { user: data.user, "device.deviceId": deviceData[0].deviceId };
+      //check devices is existing or not
+      const query = { user: data.user, "devices.deviceId": deviceData[0].deviceId };
       const findUserDevice = await client.db(dbName).collection(userCollection).findOne(query);
 
       if(findUserDevice){
-        //update existing device token
+        //update existing devices token
         try { 
         
-          const allExistingDevices =findUser.device;
+          const allExistingDevices =findUser.devices;
           const deviceCount =Object.keys(allExistingDevices).length;
         
           const newConvertedDevices = new Array ;
           for(let i = 0 ;i< deviceCount;i++){
                 
-            if(allExistingDevices[i].deviceId != data.device[0].deviceId ){    
+            if(allExistingDevices[i].deviceId != data.devices[0].deviceId ){    
               const newDevice=  {
                 deviceId: allExistingDevices[i].deviceId ,
                 deviceName: allExistingDevices[i].deviceName,
@@ -681,12 +381,12 @@ async function deleteUser(client,req,res) {
               allDevString = allDevString + "," + tempSting;
             } 
           }
-            const newDevicescreate =  "{ " + ' "device" ' +": [ "+ allDevString + "] }" ;
+            const newDevicescreate =  "{ " + ' "devices" ' +": [ "+ allDevString + "] }" ;
         const obj = JSON.parse(newDevicescreate);
       //  console.log( obj);
       const post = await client.db(dbName).collection(userCollection).findOneAndUpdate({user:findUser.user},{$set:obj});
     
-       return "remove a device in existing user";
+       return "remove a devices in existing user";
 
         } catch (error) {
           response.status(400).json({msg:"err"});
@@ -694,7 +394,7 @@ async function deleteUser(client,req,res) {
       }
       else{
    
-     return "Erro This device is not in this user";
+     return "Erro This devices is not in this user";
       }
     }
 
@@ -745,8 +445,6 @@ async function deleteUser(client,req,res) {
     req.end();
  });
  }
-
- //query 
 
    //get all notifications query
   async function getAllNotificationsQuery(clients,req,res) {
@@ -879,7 +577,7 @@ async function getAllUsersQuery(clients,req,res) {
       result = await clients.db(dbName).collection(userCollection)
       .find(
         {"user":{$regex : filterUser ,$options:"i"},
-         "device.deviceName":{$regex : filterDeviceName ,$options:"i"}
+         "devices.deviceName":{$regex : filterDeviceName ,$options:"i"}
         
       })
       .sort({user: sortOrder})
@@ -892,9 +590,9 @@ async function getAllUsersQuery(clients,req,res) {
       result = await clients.db(dbName).collection(userCollection)
       .find(
         {user:{$regex : filterUser ,$options:"i"},
-        "device.deviceName":{$regex : filterDeviceName ,$options:"i"}
+        "devices.deviceName":{$regex : filterDeviceName ,$options:"i"}
       })
-      .sort({"device.deviceName": sortOrder})
+      .sort({"devices.deviceName": sortOrder})
       .skip(currentItemCount)
       .limit(numberOfRows)
       .toArray();
@@ -908,7 +606,6 @@ async function getAllUsersQuery(clients,req,res) {
     res.status(400).json({msg:error});
    }
   }
-
 
 export const apiData = serverless(app); 
 
