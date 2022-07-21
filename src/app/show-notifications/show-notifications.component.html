@@ -1,74 +1,68 @@
 
         <div class="container">
             <div class="row">
-              <div class="col-9">
+              <div class="col-12">
                 
-                    <p-table [value]="customers" [lazy]="true" (onLazyLoad)="loadCustomers($event)" responsiveLayout="scroll" dataKey="id"
-                    [selection]="selectedCustomers"  [selectAll]="selectAll" 
-                    [paginator]="true" [rows]="2" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['name','country.name', 'company', 'representative.name']">
+                <p-table [value]="notificationsArray"
+                [lazy]="true"
+                (onLazyLoad)="loadCustomers($event)"
+                 [scrollable]="true" 
+                   scrollHeight="400px"
+                   dataKey="id"
+                   scrollDirection="both"
+                   [paginator]="true" 
+                   [rows]="10" 
+                   [totalRecords]="totalRecordsOfNotifications" 
+                   [loading]="loading"
+                   [showCurrentPageReport]="true" 
+                   responsiveLayout="scroll"
+                   currentPageReportTemplate=""
+                   styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                   >
                     <ng-template pTemplate="header">
                         <tr>
-                            <th style="width: 3rem"></th>
-                            <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-                            <th pSortableColumn="country.name">Country <p-sortIcon field="country.name"></p-sortIcon></th>
-                            <th pSortableColumn="company">Company <p-sortIcon field="company"></p-sortIcon></th>
-                            <th pSortableColumn="representative.name">Representative <p-sortIcon field="representative.name"></p-sortIcon></th>
+                            <th class="tableStyle" pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
+                            <th class="tableStyle" pSortableColumn="body">Body <p-sortIcon field="body"></p-sortIcon></th>
+                            <th class="tableStyle" pSortableColumn="sendBy">Send By <p-sortIcon field="sendBy"></p-sortIcon></th>
+                            <th class="tableStyle" pSortableColumn="sendFor">Send For <p-sortIcon field="sendFor"></p-sortIcon></th>
+                            <th class="tableStyle" pSortableColumn="time">Date <p-sortIcon field="time"></p-sortIcon></th>
                         </tr>
-                        <tr>
-                            <th style="width: 3rem">
-                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                            </th>
-                            <th>
-                                <p-columnFilter type="text" field="name"></p-columnFilter>
-                            </th>
-                            <th>
-                                <p-columnFilter type="text" field="country.name"></p-columnFilter>
-                            </th>
-                            <th>
-                                <p-columnFilter type="text" field="company"></p-columnFilter>
-                            </th>
-                            <th>
-                            
-                            </th>
+                        <tr>    
+                          <th>
+                            <p-columnFilter  class="tableStyle" type="text" field="title"></p-columnFilter>
+                        </th>
+                        <th>
+                            <p-columnFilter  class="tableStyle" type="text" field="body"></p-columnFilter>
+                        </th>
+                        <th>
+                            <p-columnFilter  class="tableStyle" type="text" field="sendBy"></p-columnFilter>
+                        </th>
+                        <th>
+                          <p-columnFilter  class="tableStyle" type="text" field="sendFor"></p-columnFilter>
+                      </th>
+                      <th>
+                          <p-columnFilter  class="tableStyle" type="text" field="time"></p-columnFilter>
+                      </th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-customer>
+                    <ng-template pTemplate="body" let-notification>
                         <tr>
-                            <td>
-                                <p-tableCheckbox [value]="customer"></p-tableCheckbox>
-                            </td>
-                            <td>{{customer.name}}</td>
-                            <td>{{customer.country.name}}</td>
-                            <td>{{customer.company}}</td>
-                            <td>{{customer.representative.name}}</td>
+                            
+                            <td class="tableStyle">{{notification.title}} </td>
+                            <td class="tableStyle">{{notification.body}}</td>
+                            <td class="tableStyle">{{notification.sendBy}}</td>
+                            <td class="tableStyle">{{notification.sendFor}}</td>
+                            <td class="tableStyle">{{notification.time}}</td>
                         </tr>
                     </ng-template>
                     </p-table>
 
                 </div>
-                <div class="col-3">
+                <div class="col-10">
                     <h4 style="text-align: center;">Delivered Notifications</h4>
                     <div class="notificationTabe">
-                        <p-table [value]="notificationsArray" responsiveLayout="scroll">
-                            <ng-template pTemplate="header">
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Body</th>
-                                    <th>Date</th>
-                                    <th>Send By</th>
-                                    <th>Send For</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-notification>
-                                <tr>
-                                    <td>{{notification.title}} </td>
-                                    <td>{{notification.body}}</td>
-                                    <td>{{notification.time}}</td>
-                                    <td>{{notification.sendBy}}</td>
-                                    <td>{{notification.sendFor}}</td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
+                     
+
                     </div>
                 </div>
               </div>
