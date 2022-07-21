@@ -51,16 +51,10 @@ export class AddministratorComponent implements OnInit {
       isSave:this.isCheck,
       token: this.finalToken,
       title:this.notificationTitle,
-<<<<<<< HEAD
-      body:"this.notificationBody",
-      sendBy:"this.sendBy",
-      sendFor:"this.sendFor"
-=======
       body:this.notificationBody,
       sendBy:this.sendBy,
       sendFor:this.sendFor,
 
->>>>>>> c53582f3a4783a511000e8742b1f62f3c595717c
     }
     this.service.postNotification(data)
     .subscribe(data => {
