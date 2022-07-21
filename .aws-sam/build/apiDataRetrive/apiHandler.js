@@ -95,18 +95,22 @@ app.use(express.json());
   );
 //add notifications
 app.post("/addNotification", async (req, res) => {
+
+ // console.log(req.body.title);
    
   try {     
     var result="";
     const functionName="addNotification";
-    const notificationResult = await sendNotification(req)
+    // const saveResult = await run(functionName,req,res);
+    // result=saveResult;
+     const notificationResult = await sendNotification(req)
     if(notificationResult == "True" && req.body.isSave == true){
      const saveResult = await run(functionName,req,res);
      result=saveResult;
     }
     else{
       result =notificationResult;
-    }
+     }
 
     if(!result)throw Error("Some thing worng");
     console.log(result);
@@ -233,18 +237,25 @@ app.post("/deleteUser", async (req, res) => {
    
   //add or update user 
  async function addUser(client,req,res) {
+  console.log("Inside add user");
+  console.log(req.body.user);
+  console.log(req.body.device[0].deviceId);
+  console.log(req.body.device[0].deviceName);
+  console.log(req.body.device[0].deviceToken);
       const data ={
         user: req.body.user,
-        devices:[
-          { deviceId:req.body.devices[0].deviceId, 
-            deviceName:req.body.devices[0].deviceName,
-            deviceToken: req.body.devices[0].deviceToken}
+        device:[
+          { deviceId:req.body.device[0].deviceId, 
+            deviceName:req.body.device[0].deviceName,
+            deviceToken: req.body.device[0].deviceToken}
         ],
        }
+       console.log("data");
+       console.log(data);
       
   
        try {
-        const deviceData =data.devices;
+        const deviceData =data.device;
         const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
         //add new user
         if(findUser == null){
@@ -255,26 +266,26 @@ app.post("/deleteUser", async (req, res) => {
         //update exising user
         else{
           //update existing User 
-          //check devices is existing or not
-          const query = { user: data.user, "devices.deviceId": deviceData[0].deviceId };
+          //check device is existing or not
+          const query = { user: data.user, "device.deviceId": deviceData[0].deviceId };
           const findUserDevice = await client.db(dbName).collection(userCollection).findOne(query);
       //    console.log(findUserDevice);
           if(findUserDevice){
-            //update existing devices token
+            //update existing device token
             const updateDocument = {
-              $set: { "devices.$.deviceToken": deviceData[0].deviceToken }
+              $set: { "device.$.deviceToken": deviceData[0].deviceToken }
             };
             const result = await client.db(dbName).collection(userCollection).updateOne(query, updateDocument);
-            console.log("updated existing devices in existing user");
-            return "updated existing devices in existing user";
+            console.log("updated existing device in existing user");
+            return "updated existing device in existing user";
           }
           else{
     
-         //add new devices to exitsting user
+         //add new device to exitsting user
          try { 
          // console.log(req.body.user);
         
-          const allExistingDevices =findUser.devices;
+          const allExistingDevices =findUser.device;
           const deviceCount =Object.keys(allExistingDevices).length;
         
           const newConvertedDevices = new Array ;
@@ -304,7 +315,7 @@ app.post("/deleteUser", async (req, res) => {
               allDevString = allDevString + "," + tempSting;
             } 
           }
-            const newDevicescreate =  "{ " + ' "devices" ' +": [ "+ allDevString + "] }" ;
+            const newDevicescreate =  "{ " + ' "device" ' +": [ "+ allDevString + "] }" ;
         const obj = JSON.parse(newDevicescreate);
       //  console.log( obj);
     //  const result = await client.db(dbName).collection("users").updateOne(query, obj);
@@ -331,14 +342,14 @@ app.post("/deleteUser", async (req, res) => {
 async function deleteUser(client,req,res) {
   const data ={
     user: req.body.user,
-    devices:[
-      { deviceId:req.body.devices[0].deviceId, 
-        deviceName:req.body.devices[0].deviceName,
-        deviceToken: req.body.devices[0].deviceToken}
+    device:[
+      { deviceId:req.body.device[0].deviceId, 
+        deviceName:req.body.device[0].deviceName,
+        deviceToken: req.body.device[0].deviceToken}
     ],
    }
   try {
-    const deviceData =data.devices;
+    const deviceData =data.device;
     const findUser = await client.db(dbName).collection(userCollection).findOne({user:data.user});
     //user is not in database
     if(findUser == null){
@@ -348,21 +359,21 @@ async function deleteUser(client,req,res) {
     //if user exist in database
     else{
       //update existing User 
-      //check devices is existing or not
-      const query = { user: data.user, "devices.deviceId": deviceData[0].deviceId };
+      //check device is existing or not
+      const query = { user: data.user, "device.deviceId": deviceData[0].deviceId };
       const findUserDevice = await client.db(dbName).collection(userCollection).findOne(query);
 
       if(findUserDevice){
-        //update existing devices token
+        //update existing device token
         try { 
         
-          const allExistingDevices =findUser.devices;
+          const allExistingDevices =findUser.device;
           const deviceCount =Object.keys(allExistingDevices).length;
         
           const newConvertedDevices = new Array ;
           for(let i = 0 ;i< deviceCount;i++){
                 
-            if(allExistingDevices[i].deviceId != data.devices[0].deviceId ){    
+            if(allExistingDevices[i].deviceId != data.device[0].deviceId ){    
               const newDevice=  {
                 deviceId: allExistingDevices[i].deviceId ,
                 deviceName: allExistingDevices[i].deviceName,
@@ -381,12 +392,12 @@ async function deleteUser(client,req,res) {
               allDevString = allDevString + "," + tempSting;
             } 
           }
-            const newDevicescreate =  "{ " + ' "devices" ' +": [ "+ allDevString + "] }" ;
+            const newDevicescreate =  "{ " + ' "device" ' +": [ "+ allDevString + "] }" ;
         const obj = JSON.parse(newDevicescreate);
       //  console.log( obj);
       const post = await client.db(dbName).collection(userCollection).findOneAndUpdate({user:findUser.user},{$set:obj});
     
-       return "remove a devices in existing user";
+       return "remove a device in existing user";
 
         } catch (error) {
           response.status(400).json({msg:"err"});
@@ -394,7 +405,7 @@ async function deleteUser(client,req,res) {
       }
       else{
    
-     return "Erro This devices is not in this user";
+     return "Erro This device is not in this user";
       }
     }
 
@@ -408,12 +419,14 @@ async function deleteUser(client,req,res) {
  }
 
  //send firebase notifications
- async function sendNotification(requestBody) {
-
+ async function sendNotification(reqData ) {
+  console.log("send notification data");
+ // console.log(reqData);
+   
   let data ={
-    title: requestBody.body.title,
-    body: requestBody.body.body,
-    token:requestBody.body.token
+    title:reqData.body.title,
+    body: reqData.body.body,
+    token:reqData.body.token
   }
 
   return new Promise((resolve, reject) => {
@@ -577,7 +590,7 @@ async function getAllUsersQuery(clients,req,res) {
       result = await clients.db(dbName).collection(userCollection)
       .find(
         {"user":{$regex : filterUser ,$options:"i"},
-         "devices.deviceName":{$regex : filterDeviceName ,$options:"i"}
+         "device.deviceName":{$regex : filterDeviceName ,$options:"i"}
         
       })
       .sort({user: sortOrder})
@@ -590,9 +603,9 @@ async function getAllUsersQuery(clients,req,res) {
       result = await clients.db(dbName).collection(userCollection)
       .find(
         {user:{$regex : filterUser ,$options:"i"},
-        "devices.deviceName":{$regex : filterDeviceName ,$options:"i"}
+        "device.deviceName":{$regex : filterDeviceName ,$options:"i"}
       })
-      .sort({"devices.deviceName": sortOrder})
+      .sort({"device.deviceName": sortOrder})
       .skip(currentItemCount)
       .limit(numberOfRows)
       .toArray();
