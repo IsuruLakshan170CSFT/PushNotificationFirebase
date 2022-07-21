@@ -71,7 +71,7 @@ export class UserComponent implements OnInit {
  userData(){
   let data={
     user:this.userName,
-    device:[
+    devices:[
       { deviceId:this.browserName, deviceName:this.browserName , deviceToken: this.currentTokenSave}
     ],
    }

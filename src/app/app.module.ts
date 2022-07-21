@@ -18,6 +18,7 @@ import {ProgressBarModule} from 'primeng/progressbar';
 import {ToastModule} from 'primeng/toast';
 import { MyNotificationsComponent } from './my-notifications/my-notifications.component';
 import { TimeConvertComponent } from './time-convert/time-convert.component';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
 
 initializeApp(environment.firebase);
 
@@ -42,6 +43,7 @@ initializeApp(environment.firebase);
     CheckboxModule,
     ProgressBarModule,
     ToastModule,
+    OverlayPanelModule,
     
   ],
   providers: [UserService],

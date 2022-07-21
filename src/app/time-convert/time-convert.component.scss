@@ -1,0 +1,43 @@
+.card{
+    min-height: 500px !important
+}
+
+.overlaySmallBtn {
+    min-width: 80px;
+}
+.overlayBigBtn{
+    min-width: 172px;
+}
+.newBtn{
+    min-width: 130px;
+}
+
+.tableStyle{
+    min-width: 100px;
+    width: 250px;
+    font-size: 15px;
+}
+.tableStyleDropdown{
+    min-width: 100px;
+    width: 320px;
+    font-size: 15px;
+}
+
+#block_container
+{
+    text-align:left;
+}
+#bloc1, #bloc2
+{
+    display:inline;
+}
+.ui-sortable-column-icon ui-icon ui-icon-carat-2-n-s {
+    display: none !important;
+}
+.checkboxColumn{
+    width: 50px;
+}
+
+.column{
+    width: 400px;
+}

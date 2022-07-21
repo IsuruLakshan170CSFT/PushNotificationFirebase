@@ -1,1 +1,77 @@
-<p>time convert</p>
+
+
+<p-overlayPanel #deviceOverlay>
+    <ng-template pTemplate >
+        <div *ngFor="let item of listOfReceivers">
+                <div>
+                  {{item.deviceName}} 
+                </div> 
+          </div >
+      </ng-template>
+  </p-overlayPanel>
+
+
+
+<p-table [value]="listOfAllUsers"
+[lazy]="true"
+(onLazyLoad)="loadDevices($event)"
+[scrollable]="true" 
+scrollHeight="400px"
+scrollDirection="both"
+[paginator]="true" 
+[rows]="10" 
+[totalRecords]="totalRecordsOfDevices" 
+
+[(selection)]="selectedlistOfUsers" 
+ dataKey="user" 
+ [showCurrentPageReport]="true" 
+ responsiveLayout="scroll"
+ currentPageReportTemplate=""
+ styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" >
+
+<ng-template pTemplate="header">
+    <tr>
+      <th class="checkboxColumn"><p-tableHeaderCheckbox  style="margin-right: 5px;">
+      </p-tableHeaderCheckbox> </th>
+        <th pSortableColumn="user" class="column">
+            User <p-sortIcon field="user" ></p-sortIcon></th>
+        <th class="column" pSortableColumn="deviceName">Device Name <p-sortIcon field="deviceName"></p-sortIcon></th>
+    </tr>
+<tr>
+  <th class="checkboxColumn"></th>
+  <th class="column">
+      <p-columnFilter type="text" field="user" ></p-columnFilter>
+  </th>
+  <th class="column">
+      <p-columnFilter type="text" field="deviceName"></p-columnFilter>
+  </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="body" let-product>
+    <tr>
+      <td class="checkboxColumn"> <p-tableCheckbox [value]="product" style="margin-right: 5px;"></p-tableCheckbox></td>
+        <td class="column">
+         {{product.user}}</td>
+         <td class="column">
+          <ng-container *ngIf="product.devices.length== 1; else setUserPreview">
+          <div>
+            {{product.devices[0].deviceName}}
+          </div>  
+            </ng-container>
+            <ng-template #setUserPreview>
+              <div id="block_container">
+                  <div id="bloc1">{{product.devices[0].deviceName}} </div>
+                   <div id="bloc2" (click)="deviceOverlay.toggle($event)"  (click)="onClickMoreDevices(product)">
+                     <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>more...
+              </div>  
+                   </div>  
+               </ng-template>
+         </td>
+    </tr>
+</ng-template>
+<ng-template pTemplate="summary">
+  <div *ngIf="listOfAllUsers.length>0" style="text-align: center; height: 20px;">
+  <p>Total records: {{totalRecordsOfDevices}}</p>
+  </div>
+</ng-template>
+</p-table>
