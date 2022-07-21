@@ -49,12 +49,21 @@ export class ShowNotificationsComponent implements OnInit {
 
   //test
   eventData:LazyLoadEvent []=[];
+  sortField:String="";
+  sendByField:String="";
+  sendForField:String="";
+  bodyField:String="";
+  titleField:String="";
+  timeFiled:String="";
+  sortOrder:number=1;
+
 
   constructor(private service:UserService) { 
       this.representatives = [
-      {name: "Amy Elsner", image: 'amyelsner.png'},
+      {name: "Amy", image: 'amyelsner.png'},
+      {name: "Abc", image: 'asd.png'},
       {name: "Anna Fali", image: 'annafali.png'},
-      {name: "Asiya Javayant", image: 'asiyajavayant.png'},
+      {name: "Abiya Javayant", image: 'asiyajavayant.png'},
       {name: "Bernardo Dominic", image: 'bernardodominic.png'},
       {name: "Elwin Sharvill", image: 'elwinsharvill.png'},
       {name: "Ioni Bowcher", image: 'ionibowcher.png'},
@@ -68,30 +77,75 @@ export class ShowNotificationsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.testfilter();
  //  this.GetAllNotificationslength();
   }
 
+  testfilter(){
+    var data="ab";
+    var stringField="name";
+    
+    this.representatives = this.representatives.filter(
+      t=>
+      { var dataLength=data.length;
+       var newName=t.name;
+       var strFirstThree = newName?.substring(0,dataLength);
+       data=data.toLowerCase();
+       strFirstThree=strFirstThree?.toLocaleLowerCase();
+        return strFirstThree == data}
+      
+      );
+    console.log(this.representatives);
+  }
   
 
   loadCustomers(event: LazyLoadEvent) {
-    this.getAllNotificationstest(event);
-   
+    if(event.sortField == undefined){
+    //  console.log("undefined");
+      this.sortField ='time';
+      this.timeFiled="",
+      this.bodyField ="",
+      this.titleField="",
+      this.sendForField="",
+      this.sendByField="",
+      this.sortOrder=-1
+    }
+    
+    else{
+      this.sortField =event.sortField;
+      this.timeFiled="",
+      this.bodyField ="abc",
+      this.titleField="",
+      this.sendForField="",
+      this.sendByField="";
+      this.sortOrder=1
 
-    console.log("loadCustomers");
-    console.log(event);
-    // console.log(event.sortOrder);
-    // console.log(event.rows);
-    // let array=event.filters;
   
-    // let array1=event.sortOrder;
-    // let array2=event.sortField;
-    // console.log(array);
-    // console.log(event.filters);
+    }
+  
+  
+   
+   // console.log(event);
+    
+    let data={
+      first:event.first,
+      rows:event.rows,
+      sortField:this.sortField,
+      sortOrder:this.sortOrder,
+      filterTitle:this.titleField,
+      filterBody:this.bodyField,
+      filterSendBy:this.sendByField,
+      filterSendFor:this.sendForField,
+      filterTime:this.timeFiled
+    }
+    
+  // console.log(data);
+  // this.getAllNotificationstestFunction(data);
     
 }
 
 //test
-getAllNotificationstest(event: LazyLoadEvent){
+getAllNotificationstestFunction(event: any){
   this.loading = true;
   this.service.getAllNotificationstest(event)
   .subscribe

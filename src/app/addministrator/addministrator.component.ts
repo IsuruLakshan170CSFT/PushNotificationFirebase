@@ -51,10 +51,9 @@ export class AddministratorComponent implements OnInit {
       isSave:this.isCheck,
       token: this.finalToken,
       title:this.notificationTitle,
-      body:this.notificationBody,
-      sendBy:this.sendBy,
-      sendFor:this.sendFor,
-
+      body:"this.notificationBody",
+      sendBy:"this.sendBy",
+      sendFor:"this.sendFor"
     }
     this.service.postNotification(data)
     .subscribe(data => {
@@ -88,7 +87,16 @@ export class AddministratorComponent implements OnInit {
   }
 
   GetAllUsersWithDevices(){
-    this.service.getAllUsers()
+    let data={
+      first:0,
+      rows:10,
+      sortOrder:1,
+      sortField:"user",
+      filterUser:"",
+      filterDeviceName:""
+    }
+
+    this.service.getAllUsers(data)
     .subscribe
     (
       data=>{
@@ -103,6 +111,7 @@ export class AddministratorComponent implements OnInit {
 
   addToken(){
 
+   
     for(var i = 0; i < this.selectedlistOfUsers.length ; i++){
         this.sendFor.push(this.selectedlistOfUsers[i].user);
       for( let j=0;j < this.selectedlistOfUsers[i].device.length ;j++){

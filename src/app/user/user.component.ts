@@ -53,6 +53,7 @@ export class UserComponent implements OnInit {
        (currentToken) => {
          if (currentToken) {
            this.currentTokenSave =currentToken;
+           console.log(this.currentTokenSave);
          } else {
          //  console.log('No registration token available.Request permission to generate one.');
          }

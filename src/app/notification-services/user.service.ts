@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient,HttpHeaders,HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/';
+import { Header } from 'primeng/api';
 @Injectable({
   providedIn: 'root'
 })
@@ -8,9 +9,9 @@ export class UserService {
   
   httpHeaders = new HttpHeaders().set('content-type', 'application/json');
 
- // readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
-  readonly baseURL ='http://127.0.0.1:3000';
-  // readonly baseURL ='http://localhost:3000';
+  readonly baseURL ='https://b4kwc0wdh6.execute-api.us-east-1.amazonaws.com';
+ // readonly baseURL ='http://127.0.0.1:3000';
+  // read//only baseURL ='http://localhost:3000';
 
   constructor(private http:HttpClient) { }
 
@@ -31,11 +32,13 @@ export class UserService {
   }
 
  // get all users
- getAllUsers(): Observable<any> {
+ getAllUsers(params?:any): Observable<any> {
+  console.log("params");
+  console.log(params);
   const httpHeaders= new HttpHeaders({
     'content-type' :'application/json',
   });
-  return this.http.get(`${this.baseURL}/getAllUsers`)
+  return this.http.get(`${this.baseURL}/getAllUsersQuery`,{params:params})
 }
 
  // get all userstest
