@@ -22,3 +22,11 @@ export interface Device{
   deviceName:string,
   deviceToken:string
 }
+export interface DeviceLazyLoad{
+  rows:number,
+  first:number,
+  sortField:string,
+  sortOrder:number,
+  filterUser:string,
+  filterDeviceName:string
+}

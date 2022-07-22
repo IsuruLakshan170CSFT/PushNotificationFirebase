@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Device ,UserModel ,Receiver ,Notifications} from 'interfaces';
+import { Device ,UserModel ,Receiver ,Notifications,DeviceLazyLoad} from 'interfaces';
 import { UserService } from '../notification-services/user.service';
 import { LazyLoadEvent } from 'primeng/api';
+
+
 
 @Component({
   selector: 'app-time-convert',
@@ -11,7 +13,7 @@ import { LazyLoadEvent } from 'primeng/api';
 })
 export class TimeConvertComponent implements OnInit {
 
-
+  deviceLoad:DeviceLazyLoad []=[];
   
   listOfUserDevices:Device[]=[];
   listOfAllUsers: UserModel[]=[];
@@ -32,24 +34,31 @@ export class TimeConvertComponent implements OnInit {
   pipe = new DatePipe('en-US');
   todayWithPipe = null;
   totalRecordsOfNotifications: number=0;
-  totalRecordsOfDevices: number=0;
+  totalRecordsOfDevices: number=20;
   cols: any[]=[];
-  sortField:String="";
+
   sendByField:String="";
   sendForField:String="";
   bodyField:String="";
   titleField:String="";
   timeFiled:String="";
-  sortOrder:number=-1;
   userField:String="";
   deviceField:String="";
   isInitDevice:boolean=false;
   isInitNotifications:boolean=false;
+
+  rows:number=0;
+  first:number=0;
+  sortOrder:number=1;
+  sortField:String="";
+  filterUser:String="";
+  filterDeviceName:String="";
+
   constructor(private service:UserService) { }
 
   ngOnInit(): void {
 
-    this.getAllUserslength();
+  //  this.getAllUserslength();
   }
 //get all notifications
 getAllUserslength(){
@@ -65,6 +74,8 @@ getAllUserslength(){
 }
   loadDevices(event: any) {
     this.isBlock =true;
+
+    /*
     if(event.sortField == undefined ) {
       if(!this.isInitDevice){
         try{
@@ -115,12 +126,40 @@ getAllUserslength(){
       filterUser:this.userField,
       filterDeviceName:this.deviceField
     }
+
+    */
     this.isBlock =false;
+
+
+    this.rows =event.rows;
+    this.first =event.first;
+    this.sortOrder =event.sortOrder;
+    this.sortField =event.sortField;
+   
+    if(this.isInitDevice){
+      this.filterUser =event.filters.user.value;
+      this.filterDeviceName =event.filters.deviceName.value;
+    }
+    else{
+      this.filterUser ="";
+      this.filterDeviceName ="";
+      this.isInitDevice =true;
+    }
+    let data={
+      first:this.first,
+      rows:this.rows ,
+      sortOrder:this.sortOrder,
+      sortField:this.sortField,
+      filterUser:this.filterUser,
+      filterDeviceName:this.filterDeviceName
+    }
+    console.log(data);
+
     this.getAllUsersWithDevices(data);
   }
   
   getAllUsersWithDevices(event: any){
-    console.log("get all users");
+ 
     this.isBlock =true;
     this.service.getAllUsers(event)
     .subscribe
