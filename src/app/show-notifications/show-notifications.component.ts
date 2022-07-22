@@ -49,14 +49,25 @@ export class ShowNotificationsComponent implements OnInit {
 
   //test
   eventData:LazyLoadEvent []=[];
-  sortField:String="";
+
   sendByField:String="";
   sendForField:String="";
   bodyField:String="";
   titleField:String="";
   timeFiled:String="";
-  sortOrder:number=1;
+ 
 
+  isInitNotifications:boolean=false;
+
+  rows:number=0;
+  first:number=0;
+  sortOrder:number=-1;
+  sortField:String="";
+  filterTitle:String="";
+  filterBody:String="";
+  filterSendFor:String="";
+  filterSendBy:String="";
+  filterTime:String="";
 
   constructor(private service:UserService) { 
       this.representatives = [
@@ -99,48 +110,43 @@ export class ShowNotificationsComponent implements OnInit {
   }
   
 
-  loadCustomers(event: LazyLoadEvent) {
-    if(event.sortField == undefined){
-    //  console.log("undefined");
-      this.sortField ='time';
-      this.timeFiled="",
-      this.bodyField ="",
-      this.titleField="",
-      this.sendForField="",
-      this.sendByField="",
-      this.sortOrder=-1
-    }
-    
-    else{
-      this.sortField =event.sortField;
-      this.timeFiled="",
-      this.bodyField ="abc",
-      this.titleField="",
-      this.sendForField="",
-      this.sendByField="";
-      this.sortOrder=1
+  loadCustomers(event: any) {
 
-  
+    this.rows =event.rows;
+    this.first =event.first;
+    this.sortOrder =event.sortOrder;
+    this.sortField =event.sortField;
+
+    if(this.isInitNotifications){
+      this.filterTitle =event.filters.title.value;
+      this.filterBody =event.filters.body.value;
+      this.filterSendFor =event.filters.sendFor.value;
+      this.filterSendBy =event.filters.sendBy.value;
+      this.filterTime =event.filters.time.value;
     }
-  
-  
-   
-   // console.log(event);
+    else{
+      this.filterTitle ="";
+      this.filterBody ="";
+      this.filterSendFor ="";
+      this.filterSendBy ="";
+      this.filterTime ="";
+      this.isInitNotifications =true;
+    }
     
     let data={
-      first:event.first,
-      rows:event.rows,
+      first:this.first,
+      rows:this.rows,
       sortField:this.sortField,
       sortOrder:this.sortOrder,
-      filterTitle:this.titleField,
-      filterBody:this.bodyField,
-      filterSendBy:this.sendByField,
-      filterSendFor:this.sendForField,
-      filterTime:this.timeFiled
+      filterTitle:this.filterTitle,
+      filterBody:this.filterBody,
+      filterSendBy:this.filterSendBy,
+      filterSendFor:this.filterSendFor,
+      filterTime:this.filterTime
     }
     
-  // console.log(data);
-  // this.getAllNotificationstestFunction(data);
+
+  this.getAllNotificationstestFunction(data);
     
 }
 
@@ -157,8 +163,7 @@ getAllNotificationstestFunction(event: any){
         }
           this.loading = false;
 
-      console.log("data");
-      console.log(data);
+    
     }
   );
 }

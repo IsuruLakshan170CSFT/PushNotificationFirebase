@@ -63,7 +63,7 @@ getAllNotifications(): Observable<any> {
   const httpHeaders= new HttpHeaders({
     'content-type' :'application/json',
   });
-  return this.http.get(`${this.baseURL}/getAllNotifications`)
+  return this.http.get(`${this.baseURL}/getAllNotificationsQuery`)
   }
 
 
@@ -77,7 +77,7 @@ getAllNotificationstest(params?: any): Observable<any> {
   const httpHeaders= new HttpHeaders({
     'content-type' :'application/json',
   });
-  return this.http.get(`${this.baseURL}/getAllNotifications`,{params:params})
+  return this.http.get(`${this.baseURL}/getAllNotificationsQuery`,{params:params})
   }
 
   // get all notification length

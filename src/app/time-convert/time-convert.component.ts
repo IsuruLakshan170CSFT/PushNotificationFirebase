@@ -49,7 +49,7 @@ export class TimeConvertComponent implements OnInit {
 
   rows:number=0;
   first:number=0;
-  sortOrder:number=1;
+  sortOrder:number=-1;
   sortField:String="";
   filterUser:String="";
   filterDeviceName:String="";
